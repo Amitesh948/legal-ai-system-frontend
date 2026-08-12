@@ -17,9 +17,7 @@ export interface Report {
 })
 export class ReportService {
   private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl + '/api/v1/reports';
-  
-  // Note: the backend route is actually registered at `/api/v1/reports`
+  private apiUrl = environment.apiUrl + '/reports';
   // since `prefix="/reports"` in the router and it is included directly in `api_v1_router`.
 
   getMyReports(): Observable<any> {
@@ -27,7 +25,7 @@ export class ReportService {
   }
 
   downloadReport(caseId: string): Observable<Blob> {
-    return this.http.get(`${environment.apiUrl}/api/v1/cases/${caseId}/report/download`, {
+    return this.http.get(`${environment.apiUrl}/cases/${caseId}/report/download`, {
       responseType: 'blob'
     });
   }

@@ -60,7 +60,7 @@ export class PaymentHistoryComponent implements OnInit {
     this.isLoading = true;
     this.paymentService.getMyPayments().subscribe({
       next: (res: any) => {
-        if (res.status === 'success') {
+        if (res.success) {
           this.dataSource.data = res.data;
           // Defer assignment to avoid early binding issues
           setTimeout(() => {

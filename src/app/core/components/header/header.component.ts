@@ -1,6 +1,7 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -9,8 +10,15 @@ import { RouterModule } from '@angular/router';
   templateUrl: './header.component.html',
   styleUrls: []
 })
-export class HeaderComponent {
-  isLoggedIn = true; // Set to true to display the dropdowns
+export class HeaderComponent implements OnInit {
+  private authService = inject(AuthService);
+  isLoggedIn = false; 
+  
+  ngOnInit() {
+    this.authService.isAuthenticated$.subscribe(status => {
+      this.isLoggedIn = status;
+    });
+  }
   
   showNotifications = false;
   showProfileMenu = false;
@@ -48,7 +56,7 @@ export class HeaderComponent {
   }
 
   logout() {
-    this.isLoggedIn = false;
+    this.authService.logout();
     this.showProfileMenu = false;
   }
 

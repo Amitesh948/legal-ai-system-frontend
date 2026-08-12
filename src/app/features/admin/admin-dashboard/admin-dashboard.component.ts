@@ -18,6 +18,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { CaseService } from '../../../core/services/case/case.service';
 import { AuthService } from '../../../core/services/auth/auth.service';
@@ -46,7 +48,9 @@ import { AdminService } from '../../../core/services/admin/admin.service';
     MatTabsModule,
     MatDialogModule,
     MatListModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatBadgeModule,
+    MatMenuModule
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css'],
@@ -67,6 +71,11 @@ export class AdminDashboardComponent implements OnInit {
   auditLogs: AuditLog[] = [];
   clients: any[] = [];
   payments: any[] = [];
+  
+  // Dynamic Notifications
+  unreadNotifications = 0;
+  recentNotifications: any[] = [];
+
   isLoading = true;
   isAssigning = false;
   
@@ -91,6 +100,10 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
+  clearNotifications() {
+    this.unreadNotifications = 0;
+  }
+
   loadData() {
     this.isLoading = true;
     
@@ -110,6 +123,13 @@ export class AdminDashboardComponent implements OnInit {
                  this.auditLogService.getLogs().subscribe({
                    next: (logRes: any) => {
                      this.auditLogs = logRes.data;
+                     
+                     // Setup dynamic notifications from recent activity
+                     if (this.auditLogs && this.auditLogs.length > 0) {
+                        this.recentNotifications = this.auditLogs.slice(0, 5);
+                        this.unreadNotifications = this.recentNotifications.length;
+                     }
+
                      // Then load Clients
                      this.adminService.getClients().subscribe({
                        next: (clientRes) => {

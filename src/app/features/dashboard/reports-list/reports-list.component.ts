@@ -48,7 +48,7 @@ export class ReportsListComponent implements OnInit {
     this.isLoading = true;
     this.reportService.getMyReports().subscribe({
       next: (res: any) => {
-        if (res.status === 'success') {
+        if (res.success) {
           this.dataSource.data = res.data;
           setTimeout(() => {
             this.dataSource.paginator = this.paginator;

@@ -195,3 +195,49 @@
 .case-info strong {
   color: var(--color-text-main);
 }
+
+.cases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  padding: 8px 0;
+}
+
+.case-item-card {
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background: var(--color-bg-card);
+}
+
+.case-item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary-light);
+}
+
+.case-avatar {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.case-item-content {
+  padding-top: 16px;
+}
+
+.case-meta {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.case-date {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: 0;
+}

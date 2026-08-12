@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 
 export interface AuthResponse {
@@ -81,6 +82,8 @@ export class AuthService {
     );
   }
 
+  private router = inject(Router);
+
   /** Logout user */
   logout(): void {
     // Optionally call backend to invalidate refresh token
@@ -112,6 +115,7 @@ export class AuthService {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     this.isAuthenticatedSubject.next(false);
+    this.router.navigate(['/login']);
   }
 
   /** Retrieve the access token */
