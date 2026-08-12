@@ -1,0 +1,23 @@
+.hero-overlay {
+  background: linear-gradient(rgba(11, 19, 38, 0.7), rgba(11, 19, 38, 0.7));
+}
+.stat-divider {
+  position: relative;
+}
+.stat-divider:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background-color: rgba(79, 216, 235, 0.3);
+}
+.testimonial-quotes {
+  color: #4fd8eb;
+  opacity: 0.2;
+  font-size: 4rem;
+  position: absolute;
+  top: -1rem;
+  left: -1rem;
+}

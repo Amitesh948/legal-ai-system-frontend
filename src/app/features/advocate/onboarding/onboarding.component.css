@@ -1,0 +1,35 @@
+.onboarding-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: calc(100vh - 64px);
+  padding: 40px 20px;
+  background-color: #f5f7fa;
+}
+
+.onboarding-card {
+  width: 100%;
+  max-width: 800px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.stepper-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid #eeeeee;
+}

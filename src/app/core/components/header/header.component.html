@@ -1,0 +1,95 @@
+<header class="bg-surface border-b border-outline-variant sticky top-0 z-[100] w-full shadow-sm">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-[1440px] mx-auto h-20">
+<div class="flex items-center gap-2">
+<i class="fa-solid fa-scale-balanced text-primary text-2xl"></i>
+<a class="text-xl font-bold text-primary tracking-wide no-underline" routerLink="/">LEGAL EAGLE AI</a>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 text-sm font-medium no-underline" routerLink="/" routerLinkActive="text-primary border-b-2 border-primary pb-1" [routerLinkActiveOptions]="{exact: true}">HOME</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 text-sm font-medium no-underline" routerLink="/about" routerLinkActive="text-primary border-b-2 border-primary pb-1">ABOUT</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 text-sm font-medium no-underline" routerLink="/profiles" routerLinkActive="text-primary border-b-2 border-primary pb-1">ATTORNEY</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 text-sm font-medium no-underline" routerLink="/practice-areas" routerLinkActive="text-primary border-b-2 border-primary pb-1">PRACTICE AREAS</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 text-sm font-medium no-underline" routerLink="/blog" routerLinkActive="text-primary border-b-2 border-primary pb-1">BLOG</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 text-sm font-medium no-underline" routerLink="/contact" routerLinkActive="text-primary border-b-2 border-primary pb-1">CONTACT</a>
+</nav>
+<div class="flex items-center gap-4">
+  <ng-container *ngIf="!isLoggedIn">
+    <a routerLink="/login" class="text-on-surface-variant hover:text-primary transition-colors duration-200 text-sm font-medium no-underline">LOG IN</a>
+    <a class="bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container px-6 py-2 rounded font-medium text-sm transition-colors duration-200 flex items-center gap-2 no-underline border-none cursor-pointer" routerLink="/register">
+      FREE CONSULTATION
+    </a>
+  </ng-container>
+
+  <ng-container *ngIf="isLoggedIn">
+    <!-- Notifications Dropdown -->
+    <div class="relative">
+      <button 
+        class="text-on-surface-variant hover:text-primary bg-transparent border-none cursor-pointer relative p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 flex items-center justify-center"
+        (click)="toggleNotifications($event)">
+        <i class="fa-regular fa-bell text-xl"></i>
+        <span *ngIf="unreadCount > 0" class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-[5px] py-[2px] rounded-full min-w-[18px] text-center" style="line-height: 1;">
+          {{ unreadCount }}
+        </span>
+      </button>
+
+      <!-- Dropdown Menu -->
+      <div *ngIf="showNotifications" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden z-50 transform origin-top-right transition-all duration-200" (click)="$event.stopPropagation()">
+        <div class="flex justify-between items-center p-3 border-b border-gray-100 bg-gray-50/80 backdrop-blur-md">
+          <h6 class="m-0 font-semibold text-gray-800 text-sm">Notifications</h6>
+          <button *ngIf="unreadCount > 0" (click)="markAllAsRead($event)" class="text-xs text-primary hover:text-primary-container font-medium bg-transparent border-none cursor-pointer">Mark all read</button>
+        </div>
+        <div class="max-h-72 overflow-y-auto">
+          <div *ngIf="notifications.length === 0" class="p-6 text-center text-gray-500 text-sm">
+            No new notifications.
+          </div>
+          <div *ngFor="let note of notifications" class="p-3 border-b border-gray-50 hover:bg-gray-50 cursor-pointer flex gap-3 transition-colors duration-150" [ngClass]="{'bg-blue-50/30': !note.isRead}">
+            <div class="mt-1">
+              <div class="w-2 h-2 rounded-full" [ngClass]="note.isRead ? 'bg-transparent' : 'bg-primary'"></div>
+            </div>
+            <div class="flex-1">
+              <p class="m-0 text-sm text-gray-800" [ngClass]="{'font-semibold': !note.isRead}">{{ note.title }}</p>
+              <p class="m-0 text-xs text-gray-500 mt-1 leading-relaxed">{{ note.message }}</p>
+              <p class="m-0 text-[10px] text-gray-400 mt-2">{{ note.time }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-2 border-t border-gray-100 text-center bg-gray-50 hover:bg-gray-100 transition-colors duration-150">
+          <a routerLink="/notifications" class="text-xs text-primary font-medium no-underline">View all</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Dropdown -->
+    <div class="relative ml-2">
+      <button 
+        class="flex items-center gap-2 bg-transparent border-none cursor-pointer p-1 pr-3 rounded-full hover:bg-gray-100 transition-colors duration-200"
+        (click)="toggleProfileMenu($event)">
+        <img src="https://ui-avatars.com/api/?name=John+Doe&background=103C68&color=fff" alt="User Profile" class="w-8 h-8 rounded-full border border-gray-200 shadow-sm object-cover" />
+        <i class="fa-solid fa-chevron-down text-xs text-gray-500"></i>
+      </button>
+
+      <!-- Dropdown Menu -->
+      <div *ngIf="showProfileMenu" class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden z-50 transform origin-top-right transition-all duration-200" (click)="$event.stopPropagation()">
+        <div class="p-4 border-b border-gray-100 bg-gray-50/80 backdrop-blur-md">
+          <p class="m-0 font-semibold text-gray-800 text-sm">John Doe</p>
+          <p class="m-0 text-xs text-gray-500 mt-1">john.doe&#64;legaleagle.com</p>
+        </div>
+        <div class="py-1">
+          <a routerLink="/profile" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors duration-150 no-underline">
+            <i class="fa-regular fa-user w-4 text-center"></i> View Profile
+          </a>
+          <a routerLink="/settings" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors duration-150 no-underline">
+            <i class="fa-solid fa-gear w-4 text-center"></i> Settings
+          </a>
+        </div>
+        <div class="py-1 border-t border-gray-100">
+          <button (click)="logout()" class="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150 bg-transparent border-none cursor-pointer text-left">
+            <i class="fa-solid fa-arrow-right-from-bracket w-4 text-center"></i> Log Out
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+</div>
+</header>

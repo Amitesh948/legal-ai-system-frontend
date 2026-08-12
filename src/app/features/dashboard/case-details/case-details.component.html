@@ -1,0 +1,372 @@
+<div class="case-details-container animate-fade-in">
+  
+  <div class="header-actions">
+    <button mat-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon> Back to Dashboard
+    </button>
+    <!-- DEBUG INFO (Temporary) -->
+    <div style="display: none;">
+      DEBUG: Status = {{ caseData?.status }} | Role = {{ userRole }} | QuoteBox? = {{ canSubmitQuote() }}
+    </div>
+
+    <button *ngIf="shouldShowPaymentButton()" 
+            mat-raised-button color="accent" 
+            class="pay-btn" 
+            [disabled]="isPaying"
+            (click)="payForCase()">
+      <mat-icon>payment</mat-icon> Pay Now (₹{{ pendingPayment?.amount || 0 }})
+    </button>
+  </div>
+
+    <!-- Payment Success Indicator -->
+    <div *ngIf="(userRole === 'client' || userRole === 'advocate' || userRole === 'admin') && caseData?.status !== 'new' && caseData?.status !== 'under_review' && caseData?.status !== 'payment_pending'" class="payment-success-banner" style="margin-bottom: 24px;">
+      <mat-card class="premium-card" style="background-color: #f0fdf4; border-left: 4px solid #22c55e;">
+        <mat-card-header>
+          <mat-icon style="margin-right: 12px; color: #22c55e; margin-top: 5px;">check_circle</mat-icon>
+          <mat-card-title style="color: #166534; font-size: 1.1rem;">Payment Completed</mat-card-title>
+          <mat-card-subtitle style="color: #15803d;" *ngIf="userRole === 'client'">Your fee has been processed. The advocate is now reviewing your case.</mat-card-subtitle>
+          <mat-card-subtitle style="color: #15803d;" *ngIf="userRole === 'advocate' || userRole === 'admin'">The client has successfully paid the fee. You may now proceed with the final report.</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+    </div>
+
+  <!-- Advocate Quote Section -->
+  <div *ngIf="canSubmitQuote()" class="quote-section" style="margin-bottom: 24px;">
+    <mat-card class="premium-card">
+      <mat-card-header>
+        <mat-icon style="margin-right: 12px; color: var(--accent-color); margin-top: 5px;">request_quote</mat-icon>
+        <mat-card-title>Submit Fee Quote</mat-card-title>
+        <mat-card-subtitle>Review the case details below and provide a custom fee quote to the client.</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content style="margin-top: 16px; display: flex; align-items: center; gap: 16px;">
+        <mat-form-field appearance="outline" style="width: 250px;">
+          <mat-label>Quote Amount (₹)</mat-label>
+          <input matInput type="number" [(ngModel)]="quoteAmount" placeholder="e.g. 15000">
+        </mat-form-field>
+        <button mat-raised-button color="primary" [disabled]="!quoteAmount || isSubmittingQuote" (click)="submitQuote()" style="margin-bottom: 20px;">
+          <mat-icon>send</mat-icon> Submit Quote
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading case data...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-state">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ errorMessage }}</p>
+    <button mat-raised-button color="primary" (click)="goBack()">Go Back</button>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && caseData" class="content-grid">
+    
+    <!-- Main Case Info -->
+    <div class="main-column">
+      <mat-card class="premium-card info-card">
+        <mat-card-header>
+          <div mat-card-avatar class="case-avatar">
+            <mat-icon>gavel</mat-icon>
+          </div>
+          <mat-card-title>{{ caseData.title }}</mat-card-title>
+          <mat-card-subtitle>Case ID: {{ caseData.case_number }}</mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div class="status-bar">
+            <div class="status-item">
+              <span class="label">Status</span>
+              <mat-chip class="status-chip">{{ caseData.status | uppercase }}</mat-chip>
+            </div>
+            <div class="status-item">
+              <span class="label">Priority</span>
+              <mat-chip class="priority-chip" [ngClass]="caseData.priority">{{ caseData.priority | uppercase }}</mat-chip>
+            </div>
+            <div class="status-item">
+              <span class="label">Created On</span>
+              <span>{{ caseData.created_at | date:'mediumDate' }}</span>
+            </div>
+          </div>
+          
+          <mat-divider style="margin: 24px 0;"></mat-divider>
+          
+          <div class="description-section">
+            <h3>Description / Notes</h3>
+            <p>{{ caseData.description || 'No description provided.' }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- TABS for content instead of stacking vertically -->
+      <mat-tab-group dynamicHeight animationDuration="300ms" class="premium-tabs" style="margin-top: 24px;">
+        
+        <!-- TAB 1: AI Analysis -->
+        <mat-tab label="AI Analysis">
+          <div class="tab-content-wrapper">
+            <!-- AI Summary -->
+            <mat-card class="premium-card ai-card" style="margin: 0; box-shadow: none; border: none;">
+              <mat-card-header>
+                <mat-icon class="ai-icon">auto_awesome</mat-icon>
+                <mat-card-title>AI Analysis</mat-card-title>
+              </mat-card-header>
+              
+              <mat-card-content *ngIf="!caseData.ai_summary" class="ai-content-empty">
+                <p>The document is currently in the queue for AI analysis. Please check back later to see the summarized legal brief, key risks, and deadlines.</p>
+                <button mat-stroked-button color="accent" disabled>Analysis in Progress...</button>
+              </mat-card-content>
+
+              <mat-card-content *ngIf="caseData.ai_summary" class="ai-content-loaded">
+                <div class="ai-section summary-text">
+                  <h4>Executive Summary</h4>
+                  <p>{{ caseData.ai_summary.summary_text }}</p>
+                </div>
+                
+                <div class="ai-section ai-risks" *ngIf="caseData.ai_summary.important_facts?.length">
+                  <h4>Important Facts</h4>
+                  <ul>
+                    <li *ngFor="let fact of caseData.ai_summary.important_facts">{{ fact }}</li>
+                  </ul>
+                </div>
+                
+                <div class="ai-section ai-risks" *ngIf="caseData.ai_summary.legal_issues?.length">
+                  <h4>Key Legal Issues / Risks</h4>
+                  <ul>
+                    <li *ngFor="let risk of caseData.ai_summary.legal_issues">{{ risk }}</li>
+                  </ul>
+                </div>
+                
+                <div class="ai-section ai-risks" *ngIf="caseData.ai_summary.suggested_sections?.length">
+                  <h4>Suggested Legal Sections</h4>
+                  <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">
+                    <mat-chip *ngFor="let section of caseData.ai_summary.suggested_sections" color="primary" selected>{{ section }}</mat-chip>
+                  </div>
+                </div>
+                
+                <div class="ai-section ai-risks" *ngIf="caseData.ai_summary.suggested_actions?.length">
+                  <h4>Suggested Actions</h4>
+                  <ul>
+                    <li *ngFor="let action of caseData.ai_summary.suggested_actions">{{ action }}</li>
+                  </ul>
+                </div>
+                
+                <div class="ai-section ai-deadlines" *ngIf="caseData.ai_summary.timeline?.length">
+                  <h4>Timeline</h4>
+                  <div class="deadline-box" *ngFor="let time of caseData.ai_summary.timeline" style="margin-bottom: 8px;">
+                    <mat-icon>event</mat-icon>
+                    <span><strong>{{ time.date }}:</strong> {{ time.event }}</span>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </mat-tab>
+
+        <!-- TAB 2: Chat with Document -->
+        <mat-tab label="Chat with Document">
+          <div class="tab-content-wrapper">
+            <!-- Document Q&A (RAG) -->
+            <mat-card class="premium-card ai-card" style="margin: 0; box-shadow: none; border: none;">
+              <mat-card-header>
+                <mat-icon style="margin-right: 16px; color: #9c27b0; align-self: center;">smart_toy</mat-icon>
+                <mat-card-title style="margin-bottom: 0;">Chat with Document</mat-card-title>
+                <mat-card-subtitle>Ask questions directly to the AI about the uploaded case documents</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content class="chat-container" style="height: 500px; margin-top: 16px;">
+                <div class="chat-messages">
+                  <div *ngIf="ragChat.length === 0" class="no-messages">
+                    <p>Ask anything about this document! For example: "What is the penalty on page 4?"</p>
+                  </div>
+                  
+                  <div *ngFor="let msg of ragChat" 
+                       class="chat-bubble-wrapper" 
+                       [ngClass]="{'is-self': msg.sender === 'user', 'is-other': msg.sender === 'ai'}">
+                    <div class="chat-avatar" [ngStyle]="{'background-color': msg.sender === 'user' ? 'var(--color-primary)' : '#9c27b0', 'color': 'white'}">
+                      <mat-icon>{{ msg.sender === 'user' ? 'person' : 'smart_toy' }}</mat-icon>
+                    </div>
+                    <div class="chat-bubble">
+                      <div class="chat-text" style="white-space: pre-wrap;">{{ msg.text }}</div>
+                    </div>
+                  </div>
+                  
+                  <div class="chat-bubble-wrapper is-other" *ngIf="isAskingRag">
+                    <div class="chat-avatar" style="background-color: #9c27b0; color: white;">
+                      <mat-icon>smart_toy</mat-icon>
+                    </div>
+                    <div class="chat-bubble typing-indicator">
+                      <span class="dot"></span>
+                      <span class="dot"></span>
+                      <span class="dot"></span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="chat-input-area">
+                  <input type="text" 
+                         [(ngModel)]="ragQuestion" 
+                         (keyup.enter)="askRagQuestion()" 
+                         placeholder="Ask a question..." 
+                         class="chat-input"
+                         [disabled]="isAskingRag || !caseData.documents?.length">
+                  <button mat-fab 
+                          [disabled]="!ragQuestion.trim() || isAskingRag || !caseData.documents?.length" 
+                          (click)="askRagQuestion()"
+                          style="background-color: #9c27b0; color: white; transform: scale(0.85);">
+                    <mat-icon>send</mat-icon>
+                  </button>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </mat-tab>
+
+        <!-- TAB 3: Legal Opinion -->
+        <mat-tab label="Legal Opinion">
+          <div class="tab-content-wrapper">
+            <!-- Legal Opinion & Report Actions -->
+            <mat-card class="premium-card opinion-card" style="margin: 0; box-shadow: none; border: none;">
+              <mat-card-header>
+                <mat-icon style="margin-right: 16px; color: #3f51b5; align-self: center;">gavel</mat-icon>
+                <mat-card-title style="margin-bottom: 0;">Legal Opinion & Final Report</mat-card-title>
+              </mat-card-header>
+              <mat-card-content style="margin-top: 16px;">
+                <div *ngIf="caseData.status !== 'report_generated' && caseData.status !== 'completed'">
+                  <p *ngIf="userRole === 'advocate' || userRole === 'admin'">
+                    Review the AI analysis and provide your professional legal opinion, risk assessment, and recommended actions.
+                  </p>
+                  <p *ngIf="userRole === 'client' && caseData.status !== 'payment_pending' && caseData.status !== 'new'">
+                    The advocate is currently drafting your professional legal opinion. It will be available for download here once finalized.
+                  </p>
+                  <p *ngIf="userRole === 'client' && (caseData.status === 'payment_pending' || caseData.status === 'new')">
+                    Once your fee is processed, the advocate will draft your professional legal opinion.
+                  </p>
+                </div>
+                <p *ngIf="caseData.status === 'report_generated' || caseData.status === 'completed'">
+                  The final legal opinion report has been generated and is ready for download.
+                </p>
+              </mat-card-content>
+              <mat-card-actions style="padding: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+                
+                <button mat-stroked-button color="primary" 
+                        *ngIf="userRole === 'advocate' || userRole === 'admin'"
+                        [routerLink]="['/cases', caseId, 'opinion']">
+                  {{ caseData.status === 'opinion_generated' ? 'Edit Legal Opinion' : 'Write Legal Opinion' }}
+                </button>
+                
+                <button mat-raised-button color="accent" 
+                        *ngIf="(userRole === 'advocate' || userRole === 'admin') && (caseData.status === 'opinion_generated' || caseData.status === 'report_generated')"
+                        [disabled]="isGeneratingReport"
+                        (click)="generateReport()">
+                  <mat-icon *ngIf="!isGeneratingReport">picture_as_pdf</mat-icon>
+                  <mat-spinner *ngIf="isGeneratingReport" diameter="20" style="margin-right: 8px; display: inline-block;"></mat-spinner>
+                  {{ isGeneratingReport ? 'Generating...' : 'Generate Final PDF Report' }}
+                </button>
+
+                <button mat-raised-button style="background-color: #2e7d32; color: white;" 
+                        *ngIf="caseData.status === 'report_generated' || caseData.status === 'completed'"
+                        (click)="downloadReport()">
+                  <mat-icon>download</mat-icon>
+                  Download Final Report
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </mat-tab>
+
+        <!-- TAB 4: Case Discussion -->
+        <mat-tab label="Discussion">
+          <div class="tab-content-wrapper">
+            <!-- Live Chat & Messaging UI -->
+            <mat-card class="premium-card chat-card" style="margin: 0; box-shadow: none; border: none;">
+              <mat-card-header>
+                <mat-icon style="margin-right: 16px; color: #ff9800; align-self: center;">forum</mat-icon>
+                <mat-card-title style="margin-bottom: 0;">Case Discussion</mat-card-title>
+                <mat-card-subtitle>Direct messages between Client and Advocate</mat-card-subtitle>
+              </mat-card-header>
+              
+              <mat-card-content class="chat-container" style="height: 500px;">
+                <div class="chat-messages">
+                  <div *ngIf="messages.length === 0" class="no-messages">
+                    <p>No messages yet. Send a message to start the discussion.</p>
+                  </div>
+                  
+                  <div *ngFor="let msg of messages" 
+                       class="chat-bubble-wrapper" 
+                       [ngClass]="{'is-self': msg.sender_role === userRole, 'is-other': msg.sender_role !== userRole}">
+                    
+                    <div class="chat-avatar">
+                      <mat-icon>{{ msg.sender_role === 'client' ? 'person' : 'gavel' }}</mat-icon>
+                    </div>
+                    
+                    <div class="chat-bubble">
+                      <div class="chat-meta">
+                        <span class="sender-name">{{ msg.sender_name }} ({{ msg.sender_role | titlecase }})</span>
+                        <span class="chat-time">{{ msg.created_at | date:'short' }}</span>
+                      </div>
+                      <div class="chat-text">{{ msg.message_text }}</div>
+                    </div>
+                  </div>
+                  
+                  <div class="chat-bubble-wrapper is-other" *ngIf="isTyping">
+                    <div class="chat-avatar">
+                      <mat-icon>person</mat-icon>
+                    </div>
+                    <div class="chat-bubble typing-indicator">
+                      <span class="dot"></span>
+                      <span class="dot"></span>
+                      <span class="dot"></span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="chat-input-area">
+                  <input type="text" 
+                         [(ngModel)]="newMessage" 
+                         (keyup)="onTyping()"
+                         (keyup.enter)="sendChatMessage()" 
+                         placeholder="Type a message..." 
+                         class="chat-input"
+                         [disabled]="isSendingMessage">
+                  <button mat-fab color="primary" 
+                          [disabled]="!newMessage.trim() || isSendingMessage" 
+                          (click)="sendChatMessage()"
+                          style="transform: scale(0.85);">
+                    <mat-icon>send</mat-icon>
+                  </button>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="side-column">
+      <mat-card class="premium-card docs-card">
+        <mat-card-header>
+          <mat-card-title>Attached Documents</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="docs-list" *ngIf="caseData.documents.length > 0">
+            <div class="doc-item" *ngFor="let doc of caseData.documents">
+              <mat-icon>picture_as_pdf</mat-icon>
+              <div class="doc-info">
+                <span class="doc-name">{{ doc.file_name }}</span>
+                <span class="doc-meta">{{ (doc.file_size / 1024 / 1024) | number:'1.2-2' }} MB</span>
+              </div>
+              <button mat-icon-button color="primary" (click)="downloadDocument(doc.id)">
+                <mat-icon>download</mat-icon>
+              </button>
+            </div>
+          </div>
+          <div *ngIf="caseData.documents.length === 0" class="no-docs">
+            <p>No documents attached.</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    
+  </div>
+</div>

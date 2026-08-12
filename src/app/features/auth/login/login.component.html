@@ -1,0 +1,84 @@
+<div class="split-layout animate-fade-in">
+  
+  <!-- Left Side: Branding & Visuals -->
+  <div class="brand-panel">
+    <div class="brand-overlay"></div>
+    <div class="brand-content">
+      <div class="logo-circle">
+        <mat-icon>balance</mat-icon>
+      </div>
+      <h1>Legal AI System</h1>
+      <p class="tagline">Next-Generation Case Management & Legal Consultation.</p>
+      
+      <div class="features-list">
+        <div class="feature-item">
+          <mat-icon>check_circle</mat-icon>
+          <span>AI-Powered Document Analysis</span>
+        </div>
+        <div class="feature-item">
+          <mat-icon>check_circle</mat-icon>
+          <span>Secure Client-Advocate Portal</span>
+        </div>
+        <div class="feature-item">
+          <mat-icon>check_circle</mat-icon>
+          <span>Automated Billing & Reporting</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side: Auth Form -->
+  <div class="form-panel">
+    <div class="form-container">
+      
+      <div class="mobile-header">
+        <mat-icon class="mobile-logo">balance</mat-icon>
+        <h2>Legal AI System</h2>
+      </div>
+
+      <h2>Welcome Back</h2>
+      <p class="sub-heading">Please enter your details to sign in.</p>
+      
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+        
+        <!-- Error Message Alert -->
+        <div class="error-alert" *ngIf="errorMessage">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <mat-form-field appearance="outline" color="primary">
+          <mat-label>Email Address</mat-label>
+          <input matInput formControlName="email" type="email" placeholder="john@example.com">
+          <mat-icon matPrefix>email</mat-icon>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('required')">Email is required</mat-error>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Please enter a valid email</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" color="primary">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'">
+          <mat-icon matPrefix>lock</mat-icon>
+          <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Password is required</mat-error>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <a routerLink="/auth/forgot-password" class="forgot-link">Forgot Password?</a>
+        </div>
+
+        <button mat-raised-button class="btn-premium login-btn" type="submit" [disabled]="loginForm.invalid || isLoading">
+          <span *ngIf="!isLoading">Sign In</span>
+          <mat-spinner *ngIf="isLoading" diameter="24" color="accent"></mat-spinner>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <p>Don't have an account? <a routerLink="/register">Create one here</a></p>
+      </div>
+      
+    </div>
+  </div>
+</div>

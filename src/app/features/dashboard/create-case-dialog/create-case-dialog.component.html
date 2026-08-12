@@ -1,0 +1,54 @@
+<h2 mat-dialog-title>Create New Case</h2>
+
+<mat-dialog-content>
+  <p class="dialog-subtitle">Enter details and upload a legal document to initiate AI analysis.</p>
+
+  <div class="error-alert" *ngIf="errorMessage">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <form [formGroup]="caseForm" class="case-form">
+    <mat-form-field appearance="outline" color="primary">
+      <mat-label>Case Title</mat-label>
+      <input matInput formControlName="title" placeholder="e.g. Smith vs Jones Contract Review">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" color="primary">
+      <mat-label>Priority Level</mat-label>
+      <mat-select formControlName="priority">
+        <mat-option value="low">Low</mat-option>
+        <mat-option value="medium">Medium</mat-option>
+        <mat-option value="high">High</mat-option>
+        <mat-option value="urgent">Urgent</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" color="primary">
+      <mat-label>Description / Notes</mat-label>
+      <textarea matInput formControlName="description" rows="3" placeholder="Brief context about this case..."></textarea>
+    </mat-form-field>
+
+    <div class="file-upload-container">
+      <label class="file-upload-label">Legal Document (PDF, Word) *</label>
+      <div class="file-upload-box" [class.has-file]="selectedFile">
+        <input type="file" id="fileInput" (change)="onFileSelected($event)" accept=".pdf,.doc,.docx" hidden>
+        
+        <label for="fileInput" class="upload-trigger">
+          <mat-icon *ngIf="!selectedFile">cloud_upload</mat-icon>
+          <mat-icon *ngIf="selectedFile" class="success-icon">task</mat-icon>
+          <span *ngIf="!selectedFile">Click to browse or drag file here</span>
+          <span *ngIf="selectedFile" class="file-name">{{ selectedFile.name }}</span>
+        </label>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()" [disabled]="isLoading">Cancel</button>
+  <button mat-raised-button color="primary" class="btn-premium" (click)="onSubmit()" [disabled]="caseForm.invalid || !selectedFile || isLoading">
+    <span *ngIf="!isLoading">Create Case</span>
+    <mat-spinner *ngIf="isLoading" diameter="20" color="accent"></mat-spinner>
+  </button>
+</mat-dialog-actions>

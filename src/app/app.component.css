@@ -1,0 +1,29 @@
+.app-container {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-bg-main);
+}
+
+/* Premium gradient mesh background */
+.background-mesh {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(55, 48, 163, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(217, 119, 6, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(15, 23, 42, 0.05) 0px, transparent 50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.content-wrapper {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}

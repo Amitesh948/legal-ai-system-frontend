@@ -1,0 +1,197 @@
+.dashboard-container {
+  min-height: 100vh;
+  background-color: var(--color-bg-main);
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-toolbar {
+  box-shadow: var(--shadow-md);
+  z-index: 10;
+}
+
+.toolbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  color: var(--color-accent);
+}
+
+.brand-text {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.user-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-name {
+  margin: 0 4px;
+}
+
+@media (max-width: 576px) {
+  .user-name {
+    display: none;
+  }
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 32px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.welcome-header {
+  margin-bottom: 32px;
+}
+
+.welcome-header h1 {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.welcome-header p {
+  color: var(--color-text-muted);
+  font-size: 16px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  border-radius: var(--border-radius-lg);
+  background: var(--color-bg-card);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+  position: relative;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 45px rgba(31, 38, 135, 0.15);
+}
+
+.stat-card:hover::before {
+  opacity: 1;
+}
+
+.stat-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stat-icon-wrapper.blue { background-color: var(--color-icon-bg-blue, #e0e7ff); color: var(--color-icon-blue, #4f46e5); }
+.stat-icon-wrapper.orange { background-color: var(--color-icon-bg-orange, #ffedd5); color: var(--color-icon-orange, #ea580c); }
+.stat-icon-wrapper.green { background-color: var(--color-icon-bg-green, #dcfce3); color: var(--color-icon-green, #16a34a); }
+
+.recent-cases-card {
+  border-radius: var(--border-radius-md);
+  min-height: 300px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.empty-state mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: var(--color-text-muted);
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  font-family: 'Inter', sans-serif;
+  color: var(--color-text-main);
+  margin-bottom: 8px;
+  font-size: 20px;
+}
+
+.empty-state p {
+  margin-bottom: 24px;
+}
+
+.case-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.case-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background-color: var(--color-bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), border-color var(--transition-fast);
+  backdrop-filter: blur(8px);
+}
+
+.case-item:hover {
+  transform: translateX(4px) translateY(-2px);
+  border-color: var(--color-primary-light);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  background-color: rgba(69, 74, 187, 0.03);
+}
+
+.case-info h4 {
+  font-size: 18px;
+  margin-bottom: 4px;
+  color: var(--color-text-main);
+  font-weight: 600;
+}
+
+.case-info p {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.case-info strong {
+  color: var(--color-text-main);
+}

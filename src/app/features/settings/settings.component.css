@@ -1,0 +1,100 @@
+.dashboard-container {
+  min-height: 100vh;
+  background-color: var(--color-bg-main);
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-toolbar {
+  box-shadow: var(--shadow-md);
+  z-index: 10;
+}
+
+.toolbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  color: var(--color-accent);
+}
+
+.brand-text {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 32px 24px;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.settings-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.icon-avatar {
+  background-color: rgba(63, 81, 181, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+}
+
+.setting-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  color: var(--color-text-main);
+}
+
+.setting-info p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.save-btn {
+  padding: 0 32px;
+  height: 48px;
+  font-size: 16px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.mb-4 {
+  margin-bottom: 24px;
+}
+
+.my-2 {
+  margin: 8px 0;
+}
+
+.pt-4 {
+  padding-top: 16px;
+}
+
+.mt-4 {
+  margin-top: 24px;
+}

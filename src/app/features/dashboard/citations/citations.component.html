@@ -1,0 +1,197 @@
+<div class="citations-container">
+  <!-- Header -->
+  <div class="header-section">
+    <div>
+      <h1 class="mat-headline-4" style="margin: 0; color: #1a237e;">Citation Library</h1>
+      <p class="mat-body-1" style="color: #666; margin-top: 4px;">
+        Search and manage legal precedents, acts, and judgments for your case analysis.
+      </p>
+    </div>
+    <button mat-raised-button color="primary" (click)="toggleAddForm()">
+      <mat-icon>{{ showAddForm ? 'close' : 'add' }}</mat-icon>
+      {{ showAddForm ? 'Cancel' : 'Add New Citation' }}
+    </button>
+  </div>
+
+  <mat-divider style="margin: 24px 0;"></mat-divider>
+
+  <!-- Add/Edit Form -->
+  <mat-card *ngIf="showAddForm" class="premium-card form-card">
+    <mat-card-header>
+      <mat-icon style="margin-right: 12px; color: #3f51b5; align-self: center;">library_books</mat-icon>
+      <mat-card-title>{{ editingId ? 'Edit Citation' : 'Add New Citation' }}</mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="citationForm" (ngSubmit)="onSubmit()" class="citation-form">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Citation Title / Case Name</mat-label>
+            <input matInput formControlName="title" placeholder="e.g. Kesavananda Bharati v. State of Kerala">
+            <mat-error *ngIf="citationForm.get('title')?.hasError('required')">Title is required</mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Type</mat-label>
+            <mat-select formControlName="citation_type">
+              <mat-option *ngFor="let type of citationTypes" [value]="type.value">
+                {{ type.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Act Name (Optional)</mat-label>
+            <input matInput formControlName="act_name" placeholder="e.g. Indian Penal Code">
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Section Number (Optional)</mat-label>
+            <input matInput formControlName="section_number" placeholder="e.g. Sec 302">
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Category (Optional)</mat-label>
+            <mat-select formControlName="category">
+              <mat-option value="">None</mat-option>
+              <mat-option *ngFor="let cat of categories" [value]="cat">{{ cat }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Court Name (Optional)</mat-label>
+            <input matInput formControlName="court_name" placeholder="e.g. Supreme Court of India">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Judgment Date (Optional)</mat-label>
+            <input matInput type="date" formControlName="judgment_date">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Case Reference (Optional)</mat-label>
+            <input matInput formControlName="case_reference" placeholder="e.g. AIR 1973 SC 1461">
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Keywords (Comma separated)</mat-label>
+          <input matInput formControlName="keywords" placeholder="e.g. basic structure, constitutional amendment">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Judgment Text / Excerpt</mat-label>
+          <textarea matInput formControlName="judgment_text" rows="4" placeholder="Paste excerpt here..."></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Personal Notes</mat-label>
+          <textarea matInput formControlName="notes" rows="2" placeholder="Your notes..."></textarea>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button mat-button type="button" (click)="toggleAddForm()">Cancel</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="citationForm.invalid || isSaving">
+            <mat-spinner *ngIf="isSaving" diameter="20" style="display: inline-block; margin-right: 8px;"></mat-spinner>
+            {{ editingId ? 'Update Citation' : 'Save Citation' }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Search & Filter -->
+  <div class="search-bar" *ngIf="!showAddForm">
+    <mat-form-field appearance="outline" class="search-input">
+      <mat-label>Search Citations...</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput [(ngModel)]="searchQuery" (keyup.enter)="onSearch()" placeholder="Search by title, act, keyword...">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-input">
+      <mat-label>Filter Category</mat-label>
+      <mat-select [(ngModel)]="categoryFilter" (selectionChange)="onSearch()">
+        <mat-option value="">All Categories</mat-option>
+        <mat-option *ngFor="let cat of categories" [value]="cat">{{ cat }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    
+    <button mat-raised-button color="primary" style="height: 56px;" (click)="onSearch()">Search</button>
+  </div>
+
+  <!-- Citations Table -->
+  <mat-card class="table-card premium-card" *ngIf="!showAddForm">
+    <div *ngIf="isLoading" class="loading-shade">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <table mat-table [dataSource]="citations" class="citations-table">
+      <!-- Title Column -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef> Citation Title </th>
+        <td mat-cell *matCellDef="let element"> 
+          <strong>{{element.title}}</strong>
+          <div class="sub-text" *ngIf="element.case_reference || element.act_name">
+            {{element.case_reference || element.act_name}} {{element.section_number ? 'Sec ' + element.section_number : ''}}
+          </div>
+          <div style="margin-top: 4px;" *ngIf="element.keywords && element.keywords.length">
+            <mat-chip-set>
+              <mat-chip *ngFor="let kw of element.keywords" style="min-height: 20px; font-size: 11px; background-color: #e3f2fd; color: #1976d2;">{{kw}}</mat-chip>
+            </mat-chip-set>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Type Column -->
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef> Type & Category </th>
+        <td mat-cell *matCellDef="let element"> 
+          <span class="type-badge" [ngClass]="element.citation_type">{{element.citation_type}}</span>
+          <div class="sub-text" *ngIf="element.category" style="margin-top: 4px;">{{element.category}}</div>
+        </td>
+      </ng-container>
+
+      <!-- Court Column -->
+      <ng-container matColumnDef="court_name">
+        <th mat-header-cell *matHeaderCellDef> Court </th>
+        <td mat-cell *matCellDef="let element"> {{element.court_name || '-'}} </td>
+      </ng-container>
+
+      <!-- Date Column -->
+      <ng-container matColumnDef="judgment_date">
+        <th mat-header-cell *matHeaderCellDef> Date </th>
+        <td mat-cell *matCellDef="let element"> {{element.judgment_date | date}} </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Actions </th>
+        <td mat-cell *matCellDef="let element" style="text-align: right;">
+          <button mat-icon-button color="primary" (click)="editCitation(element)" matTooltip="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteCitation(element.id)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="citation-row"></tr>
+      
+      <!-- No Data Row -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="5" style="text-align: center; padding: 48px;">
+          <mat-icon style="font-size: 48px; height: 48px; width: 48px; color: #ccc;">search_off</mat-icon>
+          <p style="margin-top: 16px; color: #666;">No citations found matching your criteria.</p>
+        </td>
+      </tr>
+    </table>
+
+    <mat-paginator [length]="100" [pageSize]="20" [pageSizeOptions]="[10, 20, 50]" (page)="onPageChange($event)"></mat-paginator>
+  </mat-card>
+</div>

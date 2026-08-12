@@ -1,0 +1,122 @@
+<div class="split-layout animate-fade-in">
+  
+  <div class="brand-panel">
+    <div class="brand-overlay"></div>
+    <div class="brand-content">
+      <div class="logo-circle">
+        <mat-icon>balance</mat-icon>
+      </div>
+      <h1>Legal AI System</h1>
+      <p class="tagline">Join our network to access advanced AI legal summaries and professional consultation services.</p>
+      
+      <div class="features-list">
+        <div class="feature-item">
+          <mat-icon>security</mat-icon>
+          <span>End-to-End Encryption</span>
+        </div>
+        <div class="feature-item">
+          <mat-icon>auto_awesome</mat-icon>
+          <span>Instant AI Case Briefs</span>
+        </div>
+        <div class="feature-item">
+          <mat-icon>gavel</mat-icon>
+          <span>Verified Advocates</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-panel">
+    <div class="form-container">
+      
+      <div class="mobile-header">
+        <mat-icon class="mobile-logo">balance</mat-icon>
+        <h2>Legal AI System</h2>
+      </div>
+
+      <h2>Create Account</h2>
+      <p class="sub-heading" *ngIf="currentStep === 1">Step 1: Enter your email to begin</p>
+      <p class="sub-heading" *ngIf="currentStep === 2">Step 2: Enter the 6-digit OTP sent to {{verifiedEmail}}</p>
+      <p class="sub-heading" *ngIf="currentStep === 3">Step 3: Tell us about yourself</p>
+      
+      <div class="error-alert" *ngIf="errorMessage">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- STEP 1: EMAIL -->
+      <form *ngIf="currentStep === 1" [formGroup]="emailForm" (ngSubmit)="sendOtp()" class="auth-form">
+        <mat-form-field appearance="outline" color="primary">
+          <mat-label>Email Address</mat-label>
+          <input matInput formControlName="email" type="email" placeholder="john@example.com">
+          <mat-icon matPrefix>email</mat-icon>
+        </mat-form-field>
+
+        <button mat-raised-button class="btn-premium login-btn" type="submit" [disabled]="emailForm.invalid || isLoading" style="margin-top: 16px;">
+          <span *ngIf="!isLoading">Send Verification Code</span>
+          <mat-spinner *ngIf="isLoading" diameter="24" color="accent"></mat-spinner>
+        </button>
+      </form>
+
+      <!-- STEP 2: OTP -->
+      <form *ngIf="currentStep === 2" [formGroup]="otpForm" (ngSubmit)="verifyOtp()" class="auth-form">
+        <mat-form-field appearance="outline" color="primary">
+          <mat-label>6-Digit OTP</mat-label>
+          <input matInput formControlName="otp_code" type="text" placeholder="123456" maxlength="6">
+          <mat-icon matPrefix>password</mat-icon>
+        </mat-form-field>
+
+        <button mat-raised-button class="btn-premium login-btn" type="submit" [disabled]="otpForm.invalid || isLoading" style="margin-top: 16px;">
+          <span *ngIf="!isLoading">Verify Email</span>
+          <mat-spinner *ngIf="isLoading" diameter="24" color="accent"></mat-spinner>
+        </button>
+      </form>
+
+      <!-- STEP 3: DETAILS -->
+      <form *ngIf="currentStep === 3" [formGroup]="detailsForm" (ngSubmit)="register()" class="auth-form">
+        <div class="name-row">
+          <mat-form-field appearance="outline" color="primary">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="first_name" placeholder="John">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" color="primary">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="last_name" placeholder="Doe">
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" color="primary">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'">
+          <mat-icon matPrefix>lock</mat-icon>
+          <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="detailsForm.get('password')?.hasError('pattern') || detailsForm.get('password')?.hasError('minlength')">
+            Must be at least 8 chars, 1 uppercase, 1 lowercase, 1 number.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" color="primary">
+          <mat-label>I am registering as a</mat-label>
+          <mat-select formControlName="role">
+            <mat-option value="client">Client (Seeking Legal Help)</mat-option>
+            <mat-option value="advocate">Advocate (Providing Legal Help)</mat-option>
+          </mat-select>
+          <mat-icon matPrefix>person</mat-icon>
+        </mat-form-field>
+
+        <button mat-raised-button class="btn-premium login-btn" type="submit" [disabled]="detailsForm.invalid || isLoading" style="margin-top: 16px;">
+          <span *ngIf="!isLoading">Complete Registration</span>
+          <mat-spinner *ngIf="isLoading" diameter="24" color="accent"></mat-spinner>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <p>Already have an account? <a routerLink="/login">Sign in here</a></p>
+      </div>
+      
+    </div>
+  </div>
+</div>

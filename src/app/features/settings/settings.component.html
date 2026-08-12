@@ -1,0 +1,105 @@
+<div class="dashboard-container">
+  <!-- Top Navigation Bar -->
+  <mat-toolbar color="primary" class="dashboard-toolbar">
+    <button mat-icon-button routerLink="/dashboard" style="margin-right: 16px;" aria-label="Back to Dashboard">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="toolbar-brand">
+      <mat-icon class="brand-icon">settings</mat-icon>
+      <span class="brand-text">Account Settings</span>
+    </div>
+  </mat-toolbar>
+
+  <!-- Content -->
+  <div class="dashboard-content animate-fade-in">
+    <div class="settings-layout">
+      
+      <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="settings-form">
+        
+        <!-- Notifications Settings -->
+        <mat-card class="glass-card mb-4">
+          <mat-card-header>
+            <div mat-card-avatar class="icon-avatar">
+              <mat-icon color="primary">notifications_active</mat-icon>
+            </div>
+            <mat-card-title>Notification Preferences</mat-card-title>
+            <mat-card-subtitle>Control how we contact you regarding case updates.</mat-card-subtitle>
+          </mat-card-header>
+          
+          <mat-card-content class="pt-4">
+            <div class="setting-row">
+              <div class="setting-info">
+                <h4>Email Notifications</h4>
+                <p>Receive email alerts when a document finishes AI analysis or a case is updated.</p>
+              </div>
+              <mat-slide-toggle formControlName="emailNotifications" color="primary"></mat-slide-toggle>
+            </div>
+            
+            <mat-divider class="my-2"></mat-divider>
+            
+            <div class="setting-row">
+              <div class="setting-info">
+                <h4>SMS Notifications</h4>
+                <p>Receive text messages for urgent legal alerts or upcoming hearings.</p>
+              </div>
+              <mat-slide-toggle formControlName="smsNotifications" color="primary"></mat-slide-toggle>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Display Settings -->
+        <mat-card class="glass-card mb-4">
+          <mat-card-header>
+            <div mat-card-avatar class="icon-avatar">
+              <mat-icon color="primary">dark_mode</mat-icon>
+            </div>
+            <mat-card-title>Display Settings</mat-card-title>
+            <mat-card-subtitle>Customize your platform viewing experience.</mat-card-subtitle>
+          </mat-card-header>
+          
+          <mat-card-content class="pt-4">
+            <div class="setting-row">
+              <div class="setting-info">
+                <h4>Dark Mode</h4>
+                <p>Switch between the sleek dark theme and a standard light theme.</p>
+              </div>
+              <mat-slide-toggle formControlName="darkMode" color="primary"></mat-slide-toggle>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Security Settings (Only for Advocates and Admins) -->
+        <mat-card class="glass-card mb-4" *ngIf="userRole !== 'client'">
+          <mat-card-header>
+            <div mat-card-avatar class="icon-avatar">
+              <mat-icon color="primary">security</mat-icon>
+            </div>
+            <mat-card-title>Security Settings</mat-card-title>
+            <mat-card-subtitle>Enhance the security of your legal account.</mat-card-subtitle>
+          </mat-card-header>
+          
+          <mat-card-content class="pt-4">
+            <div class="setting-row">
+              <div class="setting-info">
+                <h4>Two-Factor Authentication (2FA)</h4>
+                <p>Require an additional verification code when logging in from a new device.</p>
+              </div>
+              <mat-slide-toggle formControlName="twoFactorAuth" color="primary"></mat-slide-toggle>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Save Button -->
+        <div class="form-actions mt-4">
+          <button mat-raised-button color="primary" type="submit" [disabled]="isLoading" class="btn-premium save-btn">
+            <mat-icon *ngIf="!isLoading">save</mat-icon>
+            <span *ngIf="!isLoading">Save Preferences</span>
+            <span *ngIf="isLoading">Saving...</span>
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>

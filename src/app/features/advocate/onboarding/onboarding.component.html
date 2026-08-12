@@ -1,0 +1,160 @@
+<div class="onboarding-container">
+  <mat-card class="onboarding-card">
+    <mat-card-header>
+      <mat-icon style="margin-right: 16px; color: #3f51b5; font-size: 32px; height: 32px; width: 32px; align-self: center;">gavel</mat-icon>
+      <mat-card-title style="font-size: 24px; margin-bottom: 4px;">Advocate Onboarding</mat-card-title>
+      <mat-card-subtitle>Complete your profile to get verified</mat-card-subtitle>
+    </mat-card-header>
+
+    <!-- LOADING STATE -->
+    <mat-card-content *ngIf="isLoading" style="text-align: center; padding: 40px;">
+      <mat-spinner diameter="40" style="margin: 0 auto;"></mat-spinner>
+      <p style="margin-top: 16px; color: #757575;">Loading profile...</p>
+    </mat-card-content>
+
+    <!-- UNDER REVIEW STATE -->
+    <mat-card-content *ngIf="!isLoading && verificationStatus === 'under_review'" style="text-align: center; padding: 48px 24px;">
+      <mat-icon style="font-size: 80px; height: 80px; width: 80px; color: #ff9800;">hourglass_top</mat-icon>
+      <h2 style="margin-top: 24px; font-size: 22px; color: #333;">Profile Under Review</h2>
+      <p style="color: #616161; max-width: 500px; margin: 16px auto; line-height: 1.6;">
+        Your profile has been successfully submitted and is currently being reviewed by our administration team.
+        You will be notified once your account is verified and activated.
+      </p>
+      <p style="color: #9e9e9e; font-size: 13px; margin-top: 24px;">
+        This process typically takes 24-48 hours.
+      </p>
+    </mat-card-content>
+
+    <!-- REJECTED STATE -->
+    <mat-card-content *ngIf="!isLoading && verificationStatus === 'rejected'" style="text-align: center; padding: 48px 24px;">
+      <mat-icon style="font-size: 80px; height: 80px; width: 80px; color: #f44336;">cancel</mat-icon>
+      <h2 style="margin-top: 24px; font-size: 22px; color: #333;">Verification Rejected</h2>
+      <p style="color: #616161; max-width: 500px; margin: 16px auto; line-height: 1.6;">
+        Unfortunately, your profile could not be verified. Please review your details and resubmit.
+      </p>
+    </mat-card-content>
+
+    <!-- PENDING STATE: Show Stepper -->
+    <mat-card-content *ngIf="!isLoading && verificationStatus === 'pending'">
+      <mat-stepper [linear]="isLinear" #stepper>
+        
+        <!-- Step 1: Professional Details -->
+        <mat-step [stepControl]="professionalForm">
+          <form [formGroup]="professionalForm">
+            <ng-template matStepLabel>Professional Details</ng-template>
+            
+            <div class="form-grid">
+              <mat-form-field appearance="outline">
+                <mat-label>State</mat-label>
+                <input matInput formControlName="state" required>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>District</mat-label>
+                <input matInput formControlName="district" required>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Bar Association</mat-label>
+                <input matInput formControlName="bar_association" required>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Practice Areas</mat-label>
+                <input matInput formControlName="practice_areas" placeholder="e.g. Criminal, Family, Corporate" required>
+              </mat-form-field>
+            </div>
+
+            <div class="stepper-actions">
+              <button mat-raised-button color="primary" [disabled]="professionalForm.invalid" (click)="saveProfessional(stepper)">Next</button>
+            </div>
+          </form>
+        </mat-step>
+
+        <!-- Step 2: Legal Education -->
+        <mat-step [stepControl]="educationForm">
+          <form [formGroup]="educationForm">
+            <ng-template matStepLabel>Legal Education</ng-template>
+            
+            <div class="form-grid">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Degree</mat-label>
+                <input matInput formControlName="llb_degree" placeholder="e.g. LL.B, B.A. LL.B" required>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>University</mat-label>
+                <input matInput formControlName="university" required>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>College</mat-label>
+                <input matInput formControlName="college" required>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Graduation Year</mat-label>
+                <input matInput type="number" formControlName="graduation_year" required>
+              </mat-form-field>
+            </div>
+
+            <div class="stepper-actions">
+              <button mat-button matStepperPrevious>Back</button>
+              <button mat-raised-button color="primary" [disabled]="educationForm.invalid" (click)="saveEducation(stepper)">Next</button>
+            </div>
+          </form>
+        </mat-step>
+
+        <!-- Step 3: Bar Council Details -->
+        <mat-step [stepControl]="barCouncilForm">
+          <form [formGroup]="barCouncilForm">
+            <ng-template matStepLabel>Bar Council</ng-template>
+            
+            <div class="form-grid">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>State Bar Council</mat-label>
+                <input matInput formControlName="state_bar_council" placeholder="e.g. Bar Council of Delhi" required>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Enrollment Number</mat-label>
+                <input matInput formControlName="bar_council_id" placeholder="e.g. D/1234/2020" required>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Enrollment Date</mat-label>
+                <input matInput formControlName="enrollment_date" placeholder="DD/MM/YYYY" required>
+              </mat-form-field>
+            </div>
+
+            <div class="stepper-actions">
+              <button mat-button matStepperPrevious>Back</button>
+              <button mat-raised-button color="primary" [disabled]="barCouncilForm.invalid" (click)="saveBarCouncil(stepper)">Next</button>
+            </div>
+          </form>
+        </mat-step>
+
+        <!-- Step 4: Verification Submission -->
+        <mat-step>
+          <ng-template matStepLabel>Submit</ng-template>
+          
+          <div style="text-align: center; padding: 32px 16px;">
+            <mat-icon style="font-size: 64px; height: 64px; width: 64px; color: #4caf50;">verified_user</mat-icon>
+            <h3 style="margin-top: 16px; font-size: 20px;">Ready for Verification</h3>
+            <p style="color: #616161; max-width: 500px; margin: 16px auto;">
+              By clicking submit, you confirm that all provided details are true and accurate. Our administration team will review your profile and activate your account.
+            </p>
+          </div>
+
+          <div class="stepper-actions" style="justify-content: center;">
+            <button mat-button matStepperPrevious>Back to Edit</button>
+            <button mat-raised-button color="accent" style="font-size: 16px; padding: 8px 32px;" (click)="submitVerification()">
+              Submit Profile for Verification
+            </button>
+          </div>
+        </mat-step>
+
+      </mat-stepper>
+    </mat-card-content>
+  </mat-card>
+</div>

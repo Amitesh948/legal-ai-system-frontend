@@ -1,0 +1,62 @@
+<div class="opinion-editor-container">
+  <div class="header">
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h2>Legal Opinion & Review (Case ID: {{ caseId }})</h2>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <form [formGroup]="opinionForm" class="opinion-form">
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Advocate's Legal Opinion</mat-label>
+          <textarea matInput formControlName="legal_opinion" rows="6" placeholder="Provide detailed legal analysis..."></textarea>
+          <mat-error *ngIf="opinionForm.get('legal_opinion')?.hasError('required')">
+            Legal Opinion is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Risk Assessment</mat-label>
+          <textarea matInput formControlName="risk_assessment" rows="4" placeholder="Identify potential legal risks..."></textarea>
+          <mat-error *ngIf="opinionForm.get('risk_assessment')?.hasError('required')">
+            Risk Assessment is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Recommended Actions</mat-label>
+          <textarea matInput formControlName="recommended_actions" rows="4" placeholder="What should the client do next?"></textarea>
+          <mat-error *ngIf="opinionForm.get('recommended_actions')?.hasError('required')">
+            Recommended Actions are required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Winning Probability (%)</mat-label>
+          <input matInput type="number" formControlName="winning_probability" min="0" max="100">
+          <mat-error *ngIf="opinionForm.get('winning_probability')?.hasError('min') || opinionForm.get('winning_probability')?.hasError('max')">
+            Must be between 0 and 100.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>AI Summary (Edited)</mat-label>
+          <textarea matInput formControlName="ai_summary_edited" rows="4" placeholder="Optionally provide an edited version of the AI summary..."></textarea>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button mat-stroked-button color="primary" type="button" (click)="saveOpinion('draft')" [disabled]="isLoading">
+            Save as Draft
+          </button>
+          <button mat-raised-button color="accent" type="button" (click)="saveOpinion('finalized')" [disabled]="opinionForm.invalid || isLoading">
+            Finalize Opinion
+          </button>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

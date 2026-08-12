@@ -1,0 +1,14 @@
+<!-- 
+  App Component Skeleton
+  Provides the main routing outlet and background structure.
+-->
+<app-header *ngIf="showHeaderFooter"></app-header>
+<main class="app-container" [ngClass]="{'has-header': showHeaderFooter}">
+  <div class="background-mesh" *ngIf="!showHeaderFooter"></div>
+  
+  <div class="content-wrapper" [ngClass]="{'px-0': showHeaderFooter}">
+    <!-- Router Outlet handles all dynamic page content -->
+    <router-outlet></router-outlet>
+  </div>
+</main>
+<app-footer *ngIf="showHeaderFooter"></app-footer>

@@ -1,0 +1,215 @@
+<div class="dashboard-container">
+  
+  <!-- Top Navigation Bar -->
+  <mat-toolbar color="primary" class="dashboard-toolbar">
+    <div class="toolbar-brand">
+      <mat-icon class="brand-icon">balance</mat-icon>
+      <span class="brand-text">Legal AI System</span>
+    </div>
+
+    <span class="spacer"></span>
+
+    <!-- Admin Panel Link -->
+    <button *ngIf="userRole === 'admin'" mat-raised-button color="accent" routerLink="/admin" style="margin-right: 16px;">
+      <mat-icon>admin_panel_settings</mat-icon> Admin Panel
+    </button>
+
+    <!-- Citations Library Link -->
+    <button *ngIf="userRole === 'admin' || userRole === 'advocate'" mat-stroked-button color="accent" routerLink="/citations" style="margin-right: 16px;">
+      <mat-icon>library_books</mat-icon> Citation Library
+    </button>
+
+    <app-notification-dropdown></app-notification-dropdown>
+    
+    <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
+      <mat-icon>account_circle</mat-icon>
+      <span class="user-name">{{ userName }}</span>
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item routerLink="/profile">
+        <mat-icon>person</mat-icon>
+        <span>View Profile</span>
+      </button>
+      <button mat-menu-item routerLink="/payments" *ngIf="userRole === 'client'">
+        <mat-icon>receipt_long</mat-icon>
+        <span>Payment History</span>
+      </button>
+      <button mat-menu-item routerLink="/reports" *ngIf="userRole === 'client' || userRole === 'advocate'">
+        <mat-icon>picture_as_pdf</mat-icon>
+        <span>Legal Reports</span>
+      </button>
+      <button mat-menu-item routerLink="/settings">
+        <mat-icon>settings</mat-icon>
+        <span>Settings</span>
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  </mat-toolbar>
+
+  <!-- Dashboard Content -->
+  <div class="dashboard-content animate-fade-in">
+    <div class="welcome-header">
+      <h1>Welcome to your Dashboard</h1>
+      <p>Here is an overview of your active cases and recent activities.</p>
+    </div>
+
+    <!-- Client / Advocate Stats -->
+    <div class="stats-grid" *ngIf="userRole !== 'admin'">
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <div mat-card-avatar class="stat-icon-wrapper blue">
+            <mat-icon>folder_open</mat-icon>
+          </div>
+          <mat-card-title>{{ activeCasesCount }}</mat-card-title>
+          <mat-card-subtitle>Active Cases</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <div mat-card-avatar class="stat-icon-wrapper orange">
+            <mat-icon>description</mat-icon>
+          </div>
+          <mat-card-title>{{ documentsAnalysedCount }}</mat-card-title>
+          <mat-card-subtitle>Documents Analysed</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <div mat-card-avatar class="stat-icon-wrapper green">
+            <mat-icon>task_alt</mat-icon>
+          </div>
+          <mat-card-title>{{ completedOpinionsCount }}</mat-card-title>
+          <mat-card-subtitle>Completed Opinions</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+    </div>
+
+    <!-- Admin Stats -->
+    <div class="stats-grid" *ngIf="userRole === 'admin' && adminStats" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <div mat-card-avatar class="stat-icon-wrapper blue">
+            <mat-icon>gavel</mat-icon>
+          </div>
+          <mat-card-title>{{ adminStats.totalActiveCases }}</mat-card-title>
+          <mat-card-subtitle>Total Active Cases</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <div mat-card-avatar class="stat-icon-wrapper green">
+            <mat-icon>group</mat-icon>
+          </div>
+          <mat-card-title>{{ adminStats.totalClients }}</mat-card-title>
+          <mat-card-subtitle>Total Clients</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <div mat-card-avatar class="stat-icon-wrapper orange">
+            <mat-icon>badge</mat-icon>
+          </div>
+          <mat-card-title>{{ adminStats.totalAdvocates }}</mat-card-title>
+          <mat-card-subtitle>Total Advocates</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <div mat-card-avatar class="stat-icon-wrapper" style="background-color: #f3e8ff; color: #9333ea;">
+            <mat-icon>payments</mat-icon>
+          </div>
+          <mat-card-title>₹{{ adminStats.totalRevenue | number:'1.0-0' }}</mat-card-title>
+          <mat-card-subtitle>Total Revenue</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+    </div>
+
+    <!-- Cases Section (Client/Advocate) -->
+    <mat-card class="recent-cases-card glass-card" *ngIf="userRole !== 'admin'">
+      <mat-card-header style="border-bottom: 1px solid var(--color-border); padding-bottom: 16px; margin-bottom: 16px;">
+        <mat-card-title style="font-family: 'Playfair Display', serif; font-size: 24px;">Recent Cases</mat-card-title>
+        <span class="spacer"></span>
+        <button mat-raised-button color="primary" class="btn-premium" (click)="openCreateCaseDialog()" *ngIf="userRole === 'client'">
+          <mat-icon>add</mat-icon> New Case
+        </button>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div *ngIf="isLoadingCases" class="loading-state">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Loading your cases...</p>
+        </div>
+
+        <div *ngIf="!isLoadingCases && cases.length === 0" class="empty-state animate-fade-in">
+          <mat-icon class="empty-icon">gavel</mat-icon>
+          <h3>No Cases Found</h3>
+          <p>You don't have any active cases yet.</p>
+          <button mat-raised-button color="primary" class="btn-premium" (click)="openCreateCaseDialog()" style="margin-top: 16px;" *ngIf="userRole === 'client'">
+            Create Your First Case
+          </button>
+        </div>
+
+        <div *ngIf="!isLoadingCases && cases.length > 0" class="cases-grid">
+          <mat-card *ngFor="let caseItem of cases" class="case-item-card" [routerLink]="['/cases', caseItem.id]">
+            <mat-card-header>
+              <div mat-card-avatar class="case-avatar">
+                <mat-icon>balance</mat-icon>
+              </div>
+              <mat-card-title>{{ caseItem.title }}</mat-card-title>
+              <mat-card-subtitle>{{ caseItem.case_number }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content class="case-item-content">
+              <div class="case-meta">
+                <mat-chip class="status-chip" [ngClass]="caseItem.status">{{ caseItem.status | uppercase }}</mat-chip>
+                <mat-chip class="priority-chip" [ngClass]="caseItem.priority">{{ caseItem.priority | uppercase }}</mat-chip>
+              </div>
+              <p class="case-date">Created on {{ caseItem.created_at | date }}</p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Admin Activity Feed -->
+    <mat-card class="recent-cases-card glass-card" *ngIf="userRole === 'admin'">
+      <mat-card-header style="border-bottom: 1px solid var(--color-border); padding-bottom: 16px; margin-bottom: 16px;">
+        <mat-card-title style="font-family: 'Playfair Display', serif; font-size: 24px;">Recent System Activity</mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div *ngIf="recentActivity.length === 0" class="empty-state animate-fade-in">
+          <mat-icon class="empty-icon">history</mat-icon>
+          <h3>No Recent Activity</h3>
+          <p>No actions have been logged in the system yet.</p>
+        </div>
+
+        <div *ngIf="recentActivity.length > 0" class="activity-feed" style="display: flex; flex-direction: column; gap: 16px; padding: 16px 0;">
+          <div *ngFor="let activity of recentActivity" class="activity-item" style="display: flex; align-items: flex-start; gap: 16px; padding: 12px; border-radius: 8px; background-color: var(--color-surface); border: 1px solid var(--color-border);">
+            <div class="activity-icon" style="background-color: var(--color-primary-light); color: var(--color-primary); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <mat-icon>{{ activity.resource_type === 'payment' ? 'payments' : activity.resource_type === 'case' ? 'folder' : activity.resource_type === 'user' ? 'person' : 'history' }}</mat-icon>
+            </div>
+            <div class="activity-details" style="flex: 1;">
+              <p style="margin: 0; font-size: 1rem; color: var(--color-text);">
+                {{ activity.action_message }}
+              </p>
+              <p style="margin: 4px 0 0; font-size: 0.85rem; color: var(--color-text-secondary);">
+                {{ activity.timestamp | date:'medium' }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
