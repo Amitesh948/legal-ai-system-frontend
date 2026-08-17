@@ -6,33 +6,25 @@
 <i class="fa-solid fa-scale-balanced text-primary text-2xl"></i>
 <span class="text-xl font-bold text-on-surface tracking-wide">LEGAL EAGLE AI</span>
 </div>
-<p class="text-on-surface-variant text-sm leading-relaxed mt-2">
-          Adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim minim ven quis nostru exercitation ullamco.
+<p class="text-on-surface-variant text-sm leading-relaxed mt-2" style="white-space: pre-wrap;">
+          {{ settings.footer_text || 'Modern, dynamic legal services powered by AI. Helping you resolve disputes efficiently.' }}
         </p>
 </div>
 <!-- Recent Posts -->
 <div class="flex flex-col gap-4">
-<h3 class="text-on-surface font-semibold text-lg">Recent Posts</h3>
-<ul class="flex flex-col gap-2 list-none p-0 m-0">
-<li><a class="text-on-surface-variant hover:text-primary transition-colors text-sm flex items-center gap-2 no-underline" href="#"><i class="fa-solid fa-chevron-right text-xs text-primary"></i> Real Estate Laws</a></li>
-<li><a class="text-on-surface-variant hover:text-primary transition-colors text-sm flex items-center gap-2 no-underline" href="#"><i class="fa-solid fa-chevron-right text-xs text-primary"></i> Accidental Insurance</a></li>
-<li><a class="text-on-surface-variant hover:text-primary transition-colors text-sm flex items-center gap-2 no-underline" href="#"><i class="fa-solid fa-chevron-right text-xs text-primary"></i> Family Disputes</a></li>
-<li><a class="text-on-surface-variant hover:text-primary transition-colors text-sm flex items-center gap-2 no-underline" href="#"><i class="fa-solid fa-chevron-right text-xs text-primary"></i> How To Resolve Dispute</a></li>
-<li><a class="text-on-surface-variant hover:text-primary transition-colors text-sm flex items-center gap-2 no-underline" href="#"><i class="fa-solid fa-chevron-right text-xs text-primary"></i> HOW TO WIN LEGAL CASES</a></li>
-</ul>
+<h3 class="text-on-surface font-semibold text-lg">Social Links</h3>
+<div class="flex gap-4 text-2xl mt-2">
+  <a *ngIf="settings.social_links?.facebook" [href]="settings.social_links.facebook" target="_blank" class="text-on-surface-variant hover:text-primary transition-colors"><i class="fa-brands fa-facebook"></i></a>
+  <a *ngIf="settings.social_links?.twitter" [href]="settings.social_links.twitter" target="_blank" class="text-on-surface-variant hover:text-primary transition-colors"><i class="fa-brands fa-twitter"></i></a>
+  <a *ngIf="settings.social_links?.linkedin" [href]="settings.social_links.linkedin" target="_blank" class="text-on-surface-variant hover:text-primary transition-colors"><i class="fa-brands fa-linkedin"></i></a>
+  <a *ngIf="settings.social_links?.instagram" [href]="settings.social_links.instagram" target="_blank" class="text-on-surface-variant hover:text-primary transition-colors"><i class="fa-brands fa-instagram"></i></a>
+</div>
 </div>
 <!-- Working Hours -->
 <div class="flex flex-col gap-4">
 <h3 class="text-on-surface font-semibold text-lg">Working Hours</h3>
-<div class="flex flex-col gap-2 text-sm text-on-surface-variant">
-<div class="flex justify-between"><span>Mon-Thu:</span> <span>9:00 - 21:00</span></div>
-<div class="flex justify-between"><span>Fri:</span> <span>10:00 - 18:00</span></div>
-<div class="flex justify-between"><span>Sat:</span> <span>10:00 - 15:00</span></div>
-<div class="mt-4 text-xs opacity-70">
-              Holidays:<br/>
-              All Govt Holidays &amp;<br/>
-              Sundays
-           </div>
+<div class="text-sm text-on-surface-variant whitespace-pre-wrap">
+  {{ settings.office_hours || 'Mon-Fri: 9:00 - 18:00\nSat-Sun: Closed' }}
 </div>
 </div>
 <!-- Contact Us -->
@@ -41,20 +33,21 @@
 <div class="flex flex-col gap-4 text-sm text-on-surface-variant">
 <div class="flex gap-2">
 <i class="fa-solid fa-location-dot text-primary mt-1"></i>
-<div>
-                 Paris Office<br/>
-                 10, Faisal Avenue, Top Hill,<br/>
-                 Tel: (051) 123-007<br/>
-                 E-mail: hello&#64;le-eagle.com
-              </div>
+<div class="whitespace-pre-wrap">
+  {{ settings.address || 'Headquarters\n123 Legal Avenue, Tech City' }}
 </div>
-<div class="flex gap-2">
-<i class="fa-solid fa-location-dot text-primary mt-1"></i>
+</div>
+<div class="flex gap-2" *ngIf="settings.phone">
+<i class="fa-solid fa-phone text-primary mt-1"></i>
 <div>
-                 10, Faisal Avenue, Top Hill,<br/>
-                 Tel: (051) 123-007<br/>
-                 E-mail: hello&#64;le-eagle.com
-              </div>
+  Tel: {{ settings.phone }}
+</div>
+</div>
+<div class="flex gap-2" *ngIf="settings.email">
+<i class="fa-solid fa-envelope text-primary mt-1"></i>
+<div>
+  Email: {{ settings.email }}
+</div>
 </div>
 </div>
 </div>
@@ -62,7 +55,7 @@
 <!-- Bottom Footer -->
 <div class="max-w-[1440px] mx-auto w-full pt-8 border-t border-surface-container-highest flex flex-col md:flex-row justify-between items-center gap-4">
 <div class="text-on-surface-variant text-xs flex gap-2">
-<span>© 2024 LegalEagle AI. All Rights Reserved.</span>
+<span>{{ settings.copyright_text || '© 2026 LegalEagle AI. All Rights Reserved.' }}</span>
 <span>|</span>
 <a class="hover:text-primary transition-colors no-underline" href="#">Privacy Policy</a>
 </div>

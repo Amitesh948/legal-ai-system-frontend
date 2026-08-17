@@ -114,6 +114,14 @@ export class AdminDashboardComponent implements OnInit {
   auditCaseTitle: string = '';
   auditMessages: any[] = [];
   isAuditLoading: boolean = false;
+  
+  // CMS State
+  cmsSettings: any = {};
+  cmsPages: any[] = [];
+  cmsFaqs: any[] = [];
+  isCmsSaving = false;
+  cmsFaqColumns: string[] = ['question', 'category', 'is_active', 'actions'];
+  cmsPageColumns: string[] = ['title', 'slug', 'is_active', 'actions'];
 
   displayedColumns: string[] = ['case_id', 'title', 'status', 'created_at', 'assignment', 'actions'];
   advocateColumns: string[] = ['name', 'bar_council_id', 'state', 'verification_status', 'actions'];
@@ -124,6 +132,101 @@ export class AdminDashboardComponent implements OnInit {
   ngOnInit(): void {
     this.loadData();
     this.loadAdminAnalytics();
+    this.loadCmsData();
+  }
+
+  loadCmsData() {
+    this.adminService.getCmsSettings().subscribe(res => this.cmsSettings = res.data || {});
+    this.adminService.getCmsPages().subscribe(res => this.cmsPages = res.data || []);
+    this.adminService.getCmsFaqs().subscribe(res => this.cmsFaqs = res.data || []);
+  }
+
+  saveCmsSettings() {
+    this.isCmsSaving = true;
+    this.adminService.updateCmsSettings(this.cmsSettings).subscribe({
+      next: () => {
+        this.snackBar.open('Website settings saved successfully', 'Close', { duration: 3000 });
+        this.isCmsSaving = false;
+      },
+      error: () => {
+        this.snackBar.open('Failed to save settings', 'Close', { duration: 3000 });
+        this.isCmsSaving = false;
+      }
+    });
+  }
+
+  // --- CMS FAQ Management ---
+  currentFaq: any = {};
+  
+  openFaqDialog(template: TemplateRef<any>, faq: any = null) {
+    if (faq) {
+      this.currentFaq = { ...faq };
+    } else {
+      this.currentFaq = { question: '', answer: '', category: 'General', display_order: 0, is_active: true };
+    }
+    this.dialog.open(template, { width: '600px' });
+  }
+
+  saveFaq() {
+    this.isCmsSaving = true;
+    const request = this.currentFaq.id 
+      ? this.adminService.updateCmsFaq(this.currentFaq.id, this.currentFaq)
+      : this.adminService.createCmsFaq(this.currentFaq);
+      
+    request.subscribe({
+      next: () => {
+        this.snackBar.open('FAQ saved successfully', 'Close', { duration: 3000 });
+        this.loadCmsData();
+        this.isCmsSaving = false;
+      },
+      error: () => {
+        this.snackBar.open('Failed to save FAQ', 'Close', { duration: 3000 });
+        this.isCmsSaving = false;
+      }
+    });
+  }
+
+  deleteFaq(id: string) {
+    if (confirm('Are you sure you want to delete this FAQ?')) {
+      this.adminService.deleteCmsFaq(id).subscribe(() => {
+        this.snackBar.open('FAQ deleted', 'Close', { duration: 2000 });
+        this.loadCmsData();
+      });
+    }
+  }
+
+  // --- CMS Page Management ---
+  currentPage: any = {};
+
+  openPageDialog(template: TemplateRef<any>, pageId: string | null = null) {
+    if (pageId) {
+      this.adminService.getCmsPageDetail(pageId).subscribe(res => {
+        this.currentPage = res.data;
+        this.dialog.open(template, { width: '800px', maxHeight: '90vh' });
+      });
+    } else {
+      this.currentPage = { title: '', slug: '', content: '', seo_title: '', seo_description: '', is_active: true };
+      this.dialog.open(template, { width: '800px', maxHeight: '90vh' });
+    }
+  }
+
+  savePage() {
+    this.isCmsSaving = true;
+    const request = this.currentPage.id 
+      ? this.adminService.updateCmsPage(this.currentPage.id, this.currentPage)
+      : this.adminService.createCmsPage(this.currentPage);
+      
+    request.subscribe({
+      next: () => {
+        this.snackBar.open('Page saved successfully', 'Close', { duration: 3000 });
+        this.loadCmsData();
+        this.isCmsSaving = false;
+      },
+      error: () => {
+        this.snackBar.open('Failed to save Page', 'Close', { duration: 3000 });
+        this.isCmsSaving = false;
+      }
+    });
   }
 
   viewChatAudit(caseObj: any, template: TemplateRef<any>) {

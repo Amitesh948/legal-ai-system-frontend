@@ -1,16 +1,14 @@
 <!-- BEGIN: Hero Section -->
-<section class="hero-bg h-[600px] flex items-center justify-center text-center px-4 relative mt-16">
+<section class="hero-bg h-[600px] flex items-center justify-center text-center px-4 relative mt-16" [style.background-image]="homeData.hero?.image_url ? 'url(' + homeData.hero.image_url + ')' : ''">
 <div class="max-w-3xl">
-<p class="text-sm md:text-base mb-4 font-medium text-on-background opacity-90">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod<br/>
-        tempor incididunt labore et dolore magna aliqua<br/>
-        enim ad minim veniam quis nostrud
+<p class="text-sm md:text-base mb-4 font-medium text-on-background opacity-90 whitespace-pre-wrap">
+        {{ homeData.hero?.subtitle || 'Expert AI-powered legal assistance.' }}
       </p>
 <h1 class="text-4xl md:text-6xl font-bold text-on-background mb-8 leading-tight">
-        BEST LEGAL ADVISERS<br/>SINCE 2007
+        {{ homeData.hero?.title || 'BEST LEGAL ADVISERS\nSINCE 2007' }}
       </h1>
-<button class="border border-on-background text-on-background px-8 py-3 rounded text-sm font-bold uppercase tracking-wider hover:bg-on-background hover:text-surface transition-colors cursor-pointer" routerLink="/about">
-        Read More
+<button class="border border-on-background text-on-background px-8 py-3 rounded text-sm font-bold uppercase tracking-wider hover:bg-on-background hover:text-surface transition-colors cursor-pointer" [routerLink]="homeData.hero?.primary_cta_link || '/about'">
+        {{ homeData.hero?.primary_cta_text || 'Read More' }}
       </button>
 </div>
 </section>
@@ -124,28 +122,20 @@
 <!-- END: Info Cards Section -->
 
 <!-- BEGIN: Practice Areas Section -->
-<section class="py-20 bg-background">
+<section class="py-20 bg-background" *ngIf="homeData.practice_areas?.length > 0">
 <div class="container mx-auto px-4 max-w-[1440px]">
 <div class="text-center mb-12">
 <i class="fa-solid fa-dove text-primary mb-2"></i>
 <h2 class="text-3xl font-bold text-on-background uppercase tracking-wider mb-4">Practice Areas</h2>
-<p class="text-outline text-sm">Dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt labore</p>
+<p class="text-outline text-sm">We specialize in a wide range of legal domains.</p>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-<div class="text-center group cursor-pointer" routerLink="/practice-areas">
-<img alt="Patent Laws" class="w-full h-auto mb-6 rounded border border-surface-container-highest group-hover:border-primary transition-colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAuHS7MPxIDdFcyWXRJirF9sdKCP5CgKvrJgSgqdP8Y-EU_Cq-ZcGwUYVHE3Qx24PJq6GB_jsjjipQmYUc9Y1DqlhOKEWB6Bc6oVtU7ruq0w-9efymGx14JeueF9W0CCiGgIz49Hodhm4RAwDIIoV-mEPkY8YyiHGbIrKhlX2Zqe78P803pPqYr-BXODG8h0j-hIkF9b39KtPUSiaqA1SwPclG6obIQw6_WGuYif1kDm3IQn6Xps8IIA"/>
-<h3 class="text-lg font-bold text-on-background mb-3 uppercase group-hover:text-primary transition-colors">Patent Laws</h3>
-<p class="text-outline text-sm px-4">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since th</p>
+<div class="text-center group cursor-pointer" routerLink="/practice-areas/{{pa.slug}}" *ngFor="let pa of homeData.practice_areas">
+<div class="w-16 h-16 mx-auto bg-surface-container flex items-center justify-center rounded-full mb-6 border border-surface-container-highest group-hover:border-primary transition-colors">
+  <i class="fa-solid fa-{{ pa.icon_name || 'gavel' }} text-primary text-2xl"></i>
 </div>
-<div class="text-center group cursor-pointer" routerLink="/practice-areas">
-<img alt="Personal Injury" class="w-full h-auto mb-6 rounded border border-surface-container-highest group-hover:border-primary transition-colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0D-N1JucRevs5v2T-omxwnnjlGmXnCHnef9Nt5jV_Ay6-0TJY-zKU88JyGGC_DgnFEwha0VWNyZg0SEBD4mylM6HbAGCmLF6pcvtLdW4XCJBoGiVR0ZhzSdz1V9j3EQqLrdN13i1t9hp3Z3kLUm7TaWUXw5FnV6fmT6E1StSNcyIHJ30RYnJtioohkftcxxUOPbrcYg7wq37JR6kvCmvcTFwPGF7UL74y6kceqAC8jPoizLW14_wDlw"/>
-<h3 class="text-lg font-bold text-on-background mb-3 uppercase group-hover:text-primary transition-colors">Personal Injury</h3>
-<p class="text-outline text-sm px-4">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since th</p>
-</div>
-<div class="text-center group cursor-pointer" routerLink="/practice-areas">
-<img alt="Criminal Laws" class="w-full h-auto mb-6 rounded border border-surface-container-highest group-hover:border-primary transition-colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4Co2BXGkIKEcbcU4jLwy4S2KqbGJgWURrxIMP7s41zLdXKKqrhkWbrtD0UV3KVt0wbFkt7R7_uREXezWv_ClkCuJ924_-lOAxjjIqGJN_neEQne3KZ1Qt_K0REg7cpNGuT7Ly-v8Yyy0GvYC4FkknJpT3MDfb4vyuMpn8zlhjiabsM1zJzoUgwqUtxDO5QLTXOcpqOq1EyhTquvGuMkZHxBfhAJ79-R427MCSf92JJT43HgSQ988_7Q"/>
-<h3 class="text-lg font-bold text-on-background mb-3 uppercase group-hover:text-primary transition-colors">Criminal Laws</h3>
-<p class="text-outline text-sm px-4">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since th</p>
+<h3 class="text-lg font-bold text-on-background mb-3 uppercase group-hover:text-primary transition-colors">{{ pa.title }}</h3>
+<p class="text-outline text-sm px-4">{{ pa.short_description }}</p>
 </div>
 </div>
 </div>
@@ -294,6 +284,23 @@
 </div>
 </section>
 <!-- END: Partners Section -->
+
+<!-- BEGIN: FAQ Section -->
+<section class="py-20 bg-surface-container-lowest" *ngIf="homeData.faqs?.length > 0">
+<div class="container mx-auto px-4 max-w-[1440px]">
+  <div class="text-center mb-12">
+    <i class="fa-solid fa-circle-question text-primary mb-2 text-3xl"></i>
+    <h2 class="text-3xl font-bold text-on-background uppercase tracking-wider mb-4">Frequently Asked Questions</h2>
+  </div>
+  <div class="max-w-3xl mx-auto flex flex-col gap-6">
+    <div *ngFor="let faq of homeData.faqs" class="bg-surface p-6 rounded shadow-sm border border-outline-variant">
+      <h3 class="text-lg font-bold text-primary mb-2">{{ faq.question }}</h3>
+      <p class="text-sm text-on-surface-variant leading-relaxed">{{ faq.answer }}</p>
+    </div>
+  </div>
+</div>
+</section>
+<!-- END: FAQ Section -->
 
 <!-- BEGIN: CTA Section -->
 <section class="bg-primary py-12 mb-16">

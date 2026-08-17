@@ -70,6 +70,10 @@
           <mat-icon matListItemIcon>history</mat-icon>
           <span matListItemTitle>Audit Logs</span>
         </a>
+        <a mat-list-item class="menu-item" [class.active]="selectedView === 'cms'" (click)="selectedView = 'cms'">
+          <mat-icon matListItemIcon>web</mat-icon>
+          <span matListItemTitle>Website CMS</span>
+        </a>
         <mat-divider style="margin: 8px 0;"></mat-divider>
         <a mat-list-item class="menu-item highlight-menu-item" (click)="openBroadcastDialog(broadcastDialog)">
           <mat-icon matListItemIcon style="color: #ff9800;">campaign</mat-icon>
@@ -578,6 +582,145 @@
             </div>
           </div>
         </div>
+
+        <!-- CMS VIEW -->
+        <div *ngIf="selectedView === 'cms'">
+          <div class="content-header">
+            <h2 class="page-title"><mat-icon>web</mat-icon> Website Content Management</h2>
+            <p class="page-subtitle">Manage public website settings, pages, and dynamic content.</p>
+          </div>
+
+          <mat-card class="glass-panel" style="margin-top: 24px;">
+            <mat-tab-group>
+              <!-- Global Settings Tab -->
+              <mat-tab label="Global Settings">
+                <div style="padding: 24px;">
+                  <form (ngSubmit)="saveCmsSettings()" #settingsForm="ngForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                      <mat-form-field appearance="outline">
+                        <mat-label>Contact Email</mat-label>
+                        <input matInput [(ngModel)]="cmsSettings.email" name="email">
+                      </mat-form-field>
+                      <mat-form-field appearance="outline">
+                        <mat-label>Contact Phone</mat-label>
+                        <input matInput [(ngModel)]="cmsSettings.phone" name="phone">
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" style="grid-column: span 2;">
+                        <mat-label>Office Address</mat-label>
+                        <textarea matInput [(ngModel)]="cmsSettings.address" name="address" rows="2"></textarea>
+                      </mat-form-field>
+                      <mat-form-field appearance="outline">
+                        <mat-label>Office Hours</mat-label>
+                        <input matInput [(ngModel)]="cmsSettings.office_hours" name="office_hours">
+                      </mat-form-field>
+                      <mat-form-field appearance="outline">
+                        <mat-label>Copyright Text</mat-label>
+                        <input matInput [(ngModel)]="cmsSettings.copyright_text" name="copyright_text">
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" style="grid-column: span 2;">
+                        <mat-label>Footer Description</mat-label>
+                        <textarea matInput [(ngModel)]="cmsSettings.footer_text" name="footer_text" rows="3"></textarea>
+                      </mat-form-field>
+                    </div>
+                    <div style="text-align: right; margin-top: 16px;">
+                      <button mat-flat-button class="btn-premium" type="submit" [disabled]="isCmsSaving">
+                        <span *ngIf="!isCmsSaving">Save Settings</span>
+                        <mat-spinner *ngIf="isCmsSaving" diameter="20"></mat-spinner>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </mat-tab>
+
+              <!-- Pages Tab -->
+              <mat-tab label="Standard Pages">
+                <div style="padding: 24px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3>Public Pages</h3>
+                    <button mat-flat-button color="primary" (click)="openPageDialog(cmsPageDialog)"><mat-icon>add</mat-icon> Create Page</button>
+                  </div>
+                  
+                  <table mat-table [dataSource]="cmsPages" class="custom-table w-100">
+                    <ng-container matColumnDef="title">
+                      <th mat-header-cell *matHeaderCellDef> Title </th>
+                      <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="slug">
+                      <th mat-header-cell *matHeaderCellDef> URL Slug </th>
+                      <td mat-cell *matCellDef="let element"> /{{element.slug}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="is_active">
+                      <th mat-header-cell *matHeaderCellDef> Status </th>
+                      <td mat-cell *matCellDef="let element"> 
+                        <mat-chip-set>
+                          <mat-chip [ngStyle]="{'background-color': element.is_active ? '#4caf50' : '#f44336', 'color': 'white'}">
+                            {{ element.is_active ? 'Published' : 'Draft' }}
+                          </mat-chip>
+                        </mat-chip-set>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="actions">
+                      <th mat-header-cell *matHeaderCellDef class="text-right"> Actions </th>
+                      <td mat-cell *matCellDef="let element" class="text-right">
+                        <button mat-icon-button color="primary" (click)="openPageDialog(cmsPageDialog, element.id)"><mat-icon>edit</mat-icon></button>
+                      </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="cmsPageColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: cmsPageColumns;" class="table-row"></tr>
+                  </table>
+                  
+                  <div *ngIf="cmsPages.length === 0" class="no-data-box">
+                    <p>No pages exist yet.</p>
+                  </div>
+                </div>
+              </mat-tab>
+
+              <!-- FAQ Tab -->
+              <mat-tab label="FAQs">
+                <div style="padding: 24px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3>Frequently Asked Questions</h3>
+                    <button mat-flat-button color="primary" (click)="openFaqDialog(cmsFaqDialog)"><mat-icon>add</mat-icon> Add FAQ</button>
+                  </div>
+                  
+                  <table mat-table [dataSource]="cmsFaqs" class="custom-table w-100">
+                    <ng-container matColumnDef="question">
+                      <th mat-header-cell *matHeaderCellDef> Question </th>
+                      <td mat-cell *matCellDef="let element"> {{element.question}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="category">
+                      <th mat-header-cell *matHeaderCellDef> Category </th>
+                      <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="is_active">
+                      <th mat-header-cell *matHeaderCellDef> Status </th>
+                      <td mat-cell *matCellDef="let element"> 
+                        <mat-chip-set>
+                          <mat-chip [ngStyle]="{'background-color': element.is_active ? '#4caf50' : '#f44336', 'color': 'white'}">
+                            {{ element.is_active ? 'Active' : 'Hidden' }}
+                          </mat-chip>
+                        </mat-chip-set>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="actions">
+                      <th mat-header-cell *matHeaderCellDef class="text-right"> Actions </th>
+                      <td mat-cell *matCellDef="let element" class="text-right">
+                        <button mat-icon-button color="primary" (click)="openFaqDialog(cmsFaqDialog, element)"><mat-icon>edit</mat-icon></button>
+                        <button mat-icon-button color="warn" (click)="deleteFaq(element.id)"><mat-icon>delete</mat-icon></button>
+                      </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="cmsFaqColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: cmsFaqColumns;" class="table-row"></tr>
+                  </table>
+                  
+                  <div *ngIf="cmsFaqs.length === 0" class="no-data-box">
+                    <p>No FAQs exist yet.</p>
+                  </div>
+                </div>
+              </mat-tab>
+            </mat-tab-group>
+          </mat-card>
+        </div>
       </div>
     </mat-sidenav-content>
   </mat-sidenav-container>
@@ -819,5 +962,93 @@
   </mat-dialog-content>
   <mat-dialog-actions align="end" style="padding: 16px;">
     <button mat-button mat-dialog-close>Close Audit</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<!-- CMS FAQ Dialog Template -->
+<ng-template #cmsFaqDialog>
+  <h2 mat-dialog-title>{{currentFaq.id ? 'Edit' : 'Add'}} FAQ</h2>
+  <mat-dialog-content>
+    <form (ngSubmit)="saveFaq()" #faqForm="ngForm" style="display: flex; flex-direction: column; gap: 16px; padding-top: 8px;">
+      <mat-form-field appearance="outline">
+        <mat-label>Question</mat-label>
+        <input matInput [(ngModel)]="currentFaq.question" name="question" required>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Answer</mat-label>
+        <textarea matInput [(ngModel)]="currentFaq.answer" name="answer" rows="4" required></textarea>
+      </mat-form-field>
+      
+      <div style="display: flex; gap: 16px;">
+        <mat-form-field appearance="outline" style="flex: 1;">
+          <mat-label>Category</mat-label>
+          <input matInput [(ngModel)]="currentFaq.category" name="category">
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="flex: 1;">
+          <mat-label>Display Order</mat-label>
+          <input matInput type="number" [(ngModel)]="currentFaq.display_order" name="display_order">
+        </mat-form-field>
+      </div>
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="currentFaq.is_active" name="is_active">
+          <mat-option [value]="true">Active</mat-option>
+          <mat-option [value]="false">Hidden</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-flat-button color="primary" [disabled]="!faqForm.form.valid || isCmsSaving" (click)="saveFaq()" mat-dialog-close>Save FAQ</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<!-- CMS Page Dialog Template -->
+<ng-template #cmsPageDialog>
+  <h2 mat-dialog-title>{{currentPage.id ? 'Edit' : 'Create'}} Page</h2>
+  <mat-dialog-content>
+    <form (ngSubmit)="savePage()" #pageForm="ngForm" style="display: flex; flex-direction: column; gap: 16px; padding-top: 8px;">
+      <div style="display: flex; gap: 16px;">
+        <mat-form-field appearance="outline" style="flex: 1;">
+          <mat-label>Page Title</mat-label>
+          <input matInput [(ngModel)]="currentPage.title" name="title" required>
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="flex: 1;">
+          <mat-label>URL Slug (e.g. about-us)</mat-label>
+          <input matInput [(ngModel)]="currentPage.slug" name="slug" required>
+        </mat-form-field>
+      </div>
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Page Content (Markdown/HTML supported)</mat-label>
+        <textarea matInput [(ngModel)]="currentPage.content" name="content" rows="12" required style="font-family: monospace;"></textarea>
+      </mat-form-field>
+      
+      <div style="display: flex; gap: 16px;">
+        <mat-form-field appearance="outline" style="flex: 1;">
+          <mat-label>SEO Title (Optional)</mat-label>
+          <input matInput [(ngModel)]="currentPage.seo_title" name="seo_title">
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="flex: 1;">
+          <mat-label>SEO Description (Optional)</mat-label>
+          <input matInput [(ngModel)]="currentPage.seo_description" name="seo_description">
+        </mat-form-field>
+      </div>
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="currentPage.is_active" name="is_active">
+          <mat-option [value]="true">Published</mat-option>
+          <mat-option [value]="false">Draft</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-flat-button color="primary" [disabled]="!pageForm.form.valid || isCmsSaving" (click)="savePage()" mat-dialog-close>Save Page</button>
   </mat-dialog-actions>
 </ng-template>

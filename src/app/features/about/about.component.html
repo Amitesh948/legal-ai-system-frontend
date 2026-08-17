@@ -1,261 +1,272 @@
-<!-- Hero Section -->
-<section class="relative h-[300px] flex items-center justify-center overflow-hidden">
-<!-- Background Image Placeholder -->
-<img alt="Hero Background" class="absolute inset-0 w-full h-full object-cover z-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOkTgQwC0eLdtKFDuwF-BBSung1fA-aAxnbcN17XZpXioMJ-VTF-wn8YOTmL9SKJDVZ5eHTAhPsMeSPeUyHe-Q7vmuHb7DYx1uwmaHeIiTKldbbkFZV4Yk3JMHSNBhlWxxAF9K8AJVkf7jivoD9OV_VkMfMuYOh-sr0LIBHfpVgK-N1_0mbByQV_ARJn5SAas8ncdnxpwU5oz3YpGCdvevdn8yXvZaQ4qP0S_-90aXPQt-3onPmfBf9A"/>
-<div class="absolute inset-0 hero-overlay z-10"></div>
-<div class="relative z-20 text-center px-4">
-<h1 class="text-4xl md:text-5xl font-bold text-on-surface mb-4">ABOUT</h1>
-<div class="flex items-center justify-center gap-2 text-sm text-on-surface-variant">
-<a class="hover:text-primary transition-colors no-underline" href="#">HOME</a>
-<span>|</span>
-<span class="text-primary">ABOUT</span>
+<!-- Dynamic CMS Page View -->
+<div *ngIf="pageContent" class="py-20 px-margin-desktop max-w-4xl mx-auto min-h-[500px]">
+  <h1 class="text-4xl md:text-5xl font-bold text-on-surface mb-8">{{ pageContent.title }}</h1>
+  
+  <div class="prose prose-lg max-w-none text-on-surface-variant" [innerHTML]="pageContent.content">
+  </div>
 </div>
-</div>
-</section>
 
-<!-- Experience Section -->
-<section class="py-20 px-margin-desktop max-w-7xl mx-auto">
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-<div>
-<div class="flex items-center gap-4 mb-4">
-<i class="fa-solid fa-dove text-primary text-xl"></i>
-<span class="text-primary font-semibold tracking-wider text-sm uppercase">LEGAL EAGLE AI</span>
-<div class="h-px bg-primary w-12 opacity-50"></div>
-</div>
-<h2 class="text-3xl md:text-4xl font-bold text-on-surface mb-6 leading-tight">MORE THAN 25 YEAR'S OF EXPERIENCE</h2>
-<p class="text-on-surface-variant mb-6 text-sm leading-relaxed">
-            Ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat.
+<!-- Fallback Static About Page (If CMS page 'about' is missing) -->
+<div *ngIf="!pageContent && !isLoading">
+  <!-- Hero Section -->
+  <section class="relative h-[300px] flex items-center justify-center overflow-hidden">
+  <!-- Background Image Placeholder -->
+  <img alt="Hero Background" class="absolute inset-0 w-full h-full object-cover z-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOkTgQwC0eLdtKFDuwF-BBSung1fA-aAxnbcN17XZpXioMJ-VTF-wn8YOTmL9SKJDVZ5eHTAhPsMeSPeUyHe-Q7vmuHb7DYx1uwmaHeIiTKldbbkFZV4Yk3JMHSNBhlWxxAF9K8AJVkf7jivoD9OV_VkMfMuYOh-sr0LIBHfpVgK-N1_0mbByQV_ARJn5SAas8ncdnxpwU5oz3YpGCdvevdn8yXvZaQ4qP0S_-90aXPQt-3onPmfBf9A"/>
+  <div class="absolute inset-0 hero-overlay z-10"></div>
+  <div class="relative z-20 text-center px-4">
+  <h1 class="text-4xl md:text-5xl font-bold text-on-surface mb-4">ABOUT</h1>
+  <div class="flex items-center justify-center gap-2 text-sm text-on-surface-variant">
+  <a class="hover:text-primary transition-colors no-underline" href="#">HOME</a>
+  <span>|</span>
+  <span class="text-primary">ABOUT</span>
+  </div>
+  </div>
+  </section>
+
+  <!-- Experience Section -->
+  <section class="py-20 px-margin-desktop max-w-7xl mx-auto">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+  <div>
+  <div class="flex items-center gap-4 mb-4">
+  <i class="fa-solid fa-dove text-primary text-xl"></i>
+  <span class="text-primary font-semibold tracking-wider text-sm uppercase">LEGAL EAGLE AI</span>
+  <div class="h-px bg-primary w-12 opacity-50"></div>
+  </div>
+  <h2 class="text-3xl md:text-4xl font-bold text-on-surface mb-6 leading-tight">MORE THAN 25 YEAR'S OF EXPERIENCE</h2>
+  <p class="text-on-surface-variant mb-6 text-sm leading-relaxed">
+              Ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat.
+            </p>
+  <a class="inline-block bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container px-8 py-3 rounded font-medium transition-colors duration-200 no-underline" href="#">
+              Read More
+            </a>
+  </div>
+  <div class="relative">
+  <!-- Main Image -->
+  <img alt="Legal professional at work" class="rounded-lg shadow-lg w-full object-cover z-10 relative" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeCCSkVacZHfgOuGjggp5M4P8CHaLXSct1Ft3ngB49eQWfpux_pgSympz3yxwcc4pN-Uab0smLUgfL1Nr2rijy_66nGEooShwSKj-lXVTNY9SGPU7KN-7rXnxCT-x0XJUmzABk0FmbTk8IR4FUJ_ehkcUWiSI4-C6xYkgYrVz2XlOD1xuF8jmd2PWm_qiMC4F66dFywHWfagnDX1fg8WlOe2DdDqCaKv8F8dXwxVHfpB6WtzJiciJnBg"/>
+  <!-- Overlapping Image -->
+  <img alt="Digital Contract" class="absolute -bottom-10 -left-10 border-8 border-surface rounded-lg shadow-xl w-1/2 z-20 hidden md:block" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-ekTIvIqvl3BZXp34-qBjbQRGuSAXmggZhRAV5_LoNKo3URoR6bVVps-55wMwmKKwEzI8UBucaogG2LF5YQEUqQgcwYckHSReOk5h3LF7DvKKu2vBI7YDJDDlhJT44QOX6lMCYrWR61DDgIrrde3q9tlTRTEW6moUTKinZhZK-evAvQVoFBZ_VGxsP855zUOjJzu3JoSFqj2cMTR0loC29x_nueow6DbUEyWI5tIVDCberBPHPagfKQ"/>
+  </div>
+  </div>
+  </section>
+
+  <!-- Practice Areas Section -->
+  <section class="py-20 bg-surface-container-lowest">
+  <div class="max-w-7xl mx-auto px-margin-desktop text-center">
+  <div class="flex items-center justify-center gap-4 mb-4">
+  <div class="h-px bg-primary w-12 opacity-50"></div>
+  <i class="fa-solid fa-dove text-primary text-xl"></i>
+  <span class="text-primary font-semibold tracking-wider text-sm uppercase">LEGAL EAGLE AI</span>
+  <div class="h-px bg-primary w-12 opacity-50"></div>
+  </div>
+  <h2 class="text-3xl md:text-4xl font-bold text-on-surface mb-4">OUR PRACTICE AREAS</h2>
+  <p class="text-on-surface-variant mb-12 max-w-2xl mx-auto text-sm">
+            Dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt labore
           </p>
-<a class="inline-block bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container px-8 py-3 rounded font-medium transition-colors duration-200 no-underline" href="#">
-            Read More
-          </a>
-</div>
-<div class="relative">
-<!-- Main Image -->
-<img alt="Legal professional at work" class="rounded-lg shadow-lg w-full object-cover z-10 relative" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeCCSkVacZHfgOuGjggp5M4P8CHaLXSct1Ft3ngB49eQWfpux_pgSympz3yxwcc4pN-Uab0smLUgfL1Nr2rijy_66nGEooShwSKj-lXVTNY9SGPU7KN-7rXnxCT-x0XJUmzABk0FmbTk8IR4FUJ_ehkcUWiSI4-C6xYkgYrVz2XlOD1xuF8jmd2PWm_qiMC4F66dFywHWfagnDX1fg8WlOe2DdDqCaKv8F8dXwxVHfpB6WtzJiciJnBg"/>
-<!-- Overlapping Image -->
-<img alt="Digital Contract" class="absolute -bottom-10 -left-10 border-8 border-surface rounded-lg shadow-xl w-1/2 z-20 hidden md:block" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-ekTIvIqvl3BZXp34-qBjbQRGuSAXmggZhRAV5_LoNKo3URoR6bVVps-55wMwmKKwEzI8UBucaogG2LF5YQEUqQgcwYckHSReOk5h3LF7DvKKu2vBI7YDJDDlhJT44QOX6lMCYrWR61DDgIrrde3q9tlTRTEW6moUTKinZhZK-evAvQVoFBZ_VGxsP855zUOjJzu3JoSFqj2cMTR0loC29x_nueow6DbUEyWI5tIVDCberBPHPagfKQ"/>
-</div>
-</div>
-</section>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  <!-- Area 1 -->
+  <div class="bg-surface-container hover:bg-surface-container-high p-8 rounded-xl border border-outline-variant hover:border-primary transition-all duration-300 group text-center cursor-pointer">
+  <div class="w-16 h-16 mx-auto bg-surface-container-low border border-outline-variant rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+  <i class="fa-solid fa-microchip text-primary text-2xl group-hover:text-on-primary"></i>
+  </div>
+  <h3 class="text-lg font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">AI &amp; DATA LAW</h3>
+  <p class="text-on-surface-variant text-sm">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor enim minim veniam quis.
+              </p>
+  </div>
+  <!-- Area 2 -->
+  <div class="bg-surface-container hover:bg-surface-container-high p-8 rounded-xl border border-outline-variant hover:border-primary transition-all duration-300 group text-center cursor-pointer">
+  <div class="w-16 h-16 mx-auto bg-surface-container-low border border-outline-variant rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+  <i class="fa-solid fa-user-shield text-primary text-2xl group-hover:text-on-primary"></i>
+  </div>
+  <h3 class="text-lg font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">CYBERSECURITY</h3>
+  <p class="text-on-surface-variant text-sm">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor enim minim veniam quis.
+              </p>
+  </div>
+  <!-- Area 3 -->
+  <div class="bg-surface-container hover:bg-surface-container-high p-8 rounded-xl border border-outline-variant hover:border-primary transition-all duration-300 group text-center cursor-pointer">
+  <div class="w-16 h-16 mx-auto bg-surface-container-low border border-outline-variant rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+  <i class="fa-solid fa-gavel text-primary text-2xl group-hover:text-on-primary"></i>
+  </div>
+  <h3 class="text-lg font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">CRIMINAL LAWS</h3>
+  <p class="text-on-surface-variant text-sm">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor enim minim veniam quis.
+              </p>
+  </div>
+  <!-- Area 4 -->
+  <div class="bg-surface-container hover:bg-surface-container-high p-8 rounded-xl border border-outline-variant hover:border-primary transition-all duration-300 group text-center cursor-pointer">
+  <div class="w-16 h-16 mx-auto bg-surface-container-low border border-outline-variant rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+  <i class="fa-solid fa-industry text-primary text-2xl group-hover:text-on-primary"></i>
+  </div>
+  <h3 class="text-lg font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">INDUSTRIAL CASES</h3>
+  <p class="text-on-surface-variant text-sm">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor enim minim veniam quis.
+              </p>
+  </div>
+  <!-- Area 5 -->
+  <div class="bg-surface-container hover:bg-surface-container-high p-8 rounded-xl border border-outline-variant hover:border-primary transition-all duration-300 group text-center cursor-pointer">
+  <div class="w-16 h-16 mx-auto bg-surface-container-low border border-outline-variant rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+  <i class="fa-solid fa-building text-primary text-2xl group-hover:text-on-primary"></i>
+  </div>
+  <h3 class="text-lg font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">REAL ESTATE LAW</h3>
+  <p class="text-on-surface-variant text-sm">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor enim minim veniam quis.
+              </p>
+  </div>
+  <!-- Area 6 -->
+  <div class="bg-surface-container hover:bg-surface-container-high p-8 rounded-xl border border-outline-variant hover:border-primary transition-all duration-300 group text-center cursor-pointer">
+  <div class="w-16 h-16 mx-auto bg-surface-container-low border border-outline-variant rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+  <i class="fa-solid fa-car-burst text-primary text-2xl group-hover:text-on-primary"></i>
+  </div>
+  <h3 class="text-lg font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">CAR ACCIDENT</h3>
+  <p class="text-on-surface-variant text-sm">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor enim minim veniam quis.
+              </p>
+  </div>
+  </div>
+  </div>
+  </section>
 
-<!-- Practice Areas Section -->
-<section class="py-20 bg-surface-container-lowest">
-<div class="max-w-7xl mx-auto px-margin-desktop text-center">
-<div class="flex items-center justify-center gap-4 mb-4">
-<div class="h-px bg-primary w-12 opacity-50"></div>
-<i class="fa-solid fa-dove text-primary text-xl"></i>
-<span class="text-primary font-semibold tracking-wider text-sm uppercase">LEGAL EAGLE AI</span>
-<div class="h-px bg-primary w-12 opacity-50"></div>
-</div>
-<h2 class="text-3xl md:text-4xl font-bold text-on-surface mb-4">OUR PRACTICE AREAS</h2>
-<p class="text-on-surface-variant mb-12 max-w-2xl mx-auto text-sm">
-          Dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt labore
-        </p>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-<!-- Area 1 -->
-<div class="bg-surface-container hover:bg-surface-container-high p-8 rounded-xl border border-outline-variant hover:border-primary transition-all duration-300 group text-center cursor-pointer">
-<div class="w-16 h-16 mx-auto bg-surface-container-low border border-outline-variant rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
-<i class="fa-solid fa-microchip text-primary text-2xl group-hover:text-on-primary"></i>
-</div>
-<h3 class="text-lg font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">AI &amp; DATA LAW</h3>
-<p class="text-on-surface-variant text-sm">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor enim minim veniam quis.
-            </p>
-</div>
-<!-- Area 2 -->
-<div class="bg-surface-container hover:bg-surface-container-high p-8 rounded-xl border border-outline-variant hover:border-primary transition-all duration-300 group text-center cursor-pointer">
-<div class="w-16 h-16 mx-auto bg-surface-container-low border border-outline-variant rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
-<i class="fa-solid fa-user-shield text-primary text-2xl group-hover:text-on-primary"></i>
-</div>
-<h3 class="text-lg font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">CYBERSECURITY</h3>
-<p class="text-on-surface-variant text-sm">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor enim minim veniam quis.
-            </p>
-</div>
-<!-- Area 3 -->
-<div class="bg-surface-container hover:bg-surface-container-high p-8 rounded-xl border border-outline-variant hover:border-primary transition-all duration-300 group text-center cursor-pointer">
-<div class="w-16 h-16 mx-auto bg-surface-container-low border border-outline-variant rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
-<i class="fa-solid fa-gavel text-primary text-2xl group-hover:text-on-primary"></i>
-</div>
-<h3 class="text-lg font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">CRIMINAL LAWS</h3>
-<p class="text-on-surface-variant text-sm">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor enim minim veniam quis.
-            </p>
-</div>
-<!-- Area 4 -->
-<div class="bg-surface-container hover:bg-surface-container-high p-8 rounded-xl border border-outline-variant hover:border-primary transition-all duration-300 group text-center cursor-pointer">
-<div class="w-16 h-16 mx-auto bg-surface-container-low border border-outline-variant rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
-<i class="fa-solid fa-industry text-primary text-2xl group-hover:text-on-primary"></i>
-</div>
-<h3 class="text-lg font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">INDUSTRIAL CASES</h3>
-<p class="text-on-surface-variant text-sm">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor enim minim veniam quis.
-            </p>
-</div>
-<!-- Area 5 -->
-<div class="bg-surface-container hover:bg-surface-container-high p-8 rounded-xl border border-outline-variant hover:border-primary transition-all duration-300 group text-center cursor-pointer">
-<div class="w-16 h-16 mx-auto bg-surface-container-low border border-outline-variant rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
-<i class="fa-solid fa-building text-primary text-2xl group-hover:text-on-primary"></i>
-</div>
-<h3 class="text-lg font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">REAL ESTATE LAW</h3>
-<p class="text-on-surface-variant text-sm">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor enim minim veniam quis.
-            </p>
-</div>
-<!-- Area 6 -->
-<div class="bg-surface-container hover:bg-surface-container-high p-8 rounded-xl border border-outline-variant hover:border-primary transition-all duration-300 group text-center cursor-pointer">
-<div class="w-16 h-16 mx-auto bg-surface-container-low border border-outline-variant rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
-<i class="fa-solid fa-car-burst text-primary text-2xl group-hover:text-on-primary"></i>
-</div>
-<h3 class="text-lg font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">CAR ACCIDENT</h3>
-<p class="text-on-surface-variant text-sm">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor enim minim veniam quis.
-            </p>
-</div>
-</div>
-</div>
-</section>
+  <!-- Stats Section -->
+  <section class="bg-surface-container-high py-16">
+  <div class="max-w-7xl mx-auto px-margin-desktop text-center">
+  <div class="flex items-center justify-center gap-4 mb-12">
+  <div class="h-px bg-outline-variant w-16 md:w-32"></div>
+  <h2 class="text-xl md:text-2xl font-semibold text-on-surface tracking-wide uppercase">EVERY CLIENT &amp; CASE IS DIFFERENT</h2>
+  <div class="h-px bg-outline-variant w-16 md:w-32"></div>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+  <div class="stat-divider text-center px-4">
+  <div class="text-4xl md:text-5xl font-bold text-primary mb-2">5,494</div>
+  <div class="text-on-surface-variant text-sm uppercase tracking-wider">Legal Cases</div>
+  </div>
+  <div class="stat-divider text-center px-4">
+  <div class="text-4xl md:text-5xl font-bold text-primary mb-2">332</div>
+  <div class="text-on-surface-variant text-sm uppercase tracking-wider">Top Attorneys</div>
+  </div>
+  <div class="stat-divider text-center px-4">
+  <div class="text-4xl md:text-5xl font-bold text-primary mb-2">235</div>
+  <div class="text-on-surface-variant text-sm uppercase tracking-wider">Happy Clients</div>
+  </div>
+  <div class="text-center px-4">
+  <div class="text-4xl md:text-5xl font-bold text-primary mb-2">235</div>
+  <div class="text-on-surface-variant text-sm uppercase tracking-wider">Awards Won</div>
+  </div>
+  </div>
+  </div>
+  </section>
 
-<!-- Stats Section -->
-<section class="bg-surface-container-high py-16">
-<div class="max-w-7xl mx-auto px-margin-desktop text-center">
-<div class="flex items-center justify-center gap-4 mb-12">
-<div class="h-px bg-outline-variant w-16 md:w-32"></div>
-<h2 class="text-xl md:text-2xl font-semibold text-on-surface tracking-wide uppercase">EVERY CLIENT &amp; CASE IS DIFFERENT</h2>
-<div class="h-px bg-outline-variant w-16 md:w-32"></div>
-</div>
-<div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-<div class="stat-divider text-center px-4">
-<div class="text-4xl md:text-5xl font-bold text-primary mb-2">5,494</div>
-<div class="text-on-surface-variant text-sm uppercase tracking-wider">Legal Cases</div>
-</div>
-<div class="stat-divider text-center px-4">
-<div class="text-4xl md:text-5xl font-bold text-primary mb-2">332</div>
-<div class="text-on-surface-variant text-sm uppercase tracking-wider">Top Attorneys</div>
-</div>
-<div class="stat-divider text-center px-4">
-<div class="text-4xl md:text-5xl font-bold text-primary mb-2">235</div>
-<div class="text-on-surface-variant text-sm uppercase tracking-wider">Happy Clients</div>
-</div>
-<div class="text-center px-4">
-<div class="text-4xl md:text-5xl font-bold text-primary mb-2">235</div>
-<div class="text-on-surface-variant text-sm uppercase tracking-wider">Awards Won</div>
-</div>
-</div>
-</div>
-</section>
-
-<!-- Results Section -->
-<section class="py-20 px-margin-desktop max-w-7xl mx-auto">
-<div class="max-w-3xl mb-16">
-<div class="flex items-center gap-4 mb-4">
-<i class="fa-solid fa-dove text-primary text-xl"></i>
-<span class="text-primary font-semibold tracking-wider text-sm uppercase">LEGAL EAGLE AI</span>
-<div class="h-px bg-primary w-12 opacity-50"></div>
-</div>
-<h2 class="text-3xl md:text-4xl font-bold text-on-surface mb-6 leading-tight">OUR PROVEN EXPERIENCE &amp; RESULTS-DRIVEN APPROACH HELP CUSTOMERS WITH EFFECTIVE LEGAL SOLUTIONS</h2>
-<p class="text-on-surface-variant text-sm leading-relaxed">
-            Ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat.
-          </p>
-</div>
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-<div class="order-2 lg:order-1">
-<div class="flex items-center gap-4 mb-4">
-<i class="fa-solid fa-dove text-primary text-xl"></i>
-<span class="text-primary font-semibold tracking-wider text-sm uppercase">LEGAL EAGLE AI</span>
-<div class="h-px bg-primary w-12 opacity-50"></div>
-</div>
-<h3 class="text-2xl font-bold text-on-surface mb-6">WE ARE A DEDICATED TEAM WITH SKILLS</h3>
-<p class="text-on-surface-variant text-sm leading-relaxed">
-                Consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco.
-             </p>
-</div>
-<div class="order-1 lg:order-2">
-<img alt="Dedicated legal team" class="rounded-lg shadow-lg w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCA8jGqckUsXxBc0-ztDZ3KkZdI16GBocMszrS83TMyUVbVcMwLBGOxcr3biHhe-SSRAfg9H9Eu7D1jqCakpunP-1PW0eRzGZSsfzqLAEPoqmYEjuIq8aovCAgBB1p631fFSGALZx7cXsgSoFjiNTFoF_3SnyNv8_pe8sutab7T-I2w6sywdncQZWR_3jrn5hCMEWPrjQYXbjg1jVXeUqrCcBY2JU3j7hFt4zhPiWWC-pHqYre_1Zoqrg"/>
-</div>
-</div>
-</section>
-
-<!-- Consultation CTA -->
-<section class="py-16 bg-surface-container border-y border-outline-variant text-center px-margin-desktop">
-<div class="max-w-4xl mx-auto">
-<div class="flex items-center justify-center gap-4 mb-4">
-<div class="h-px bg-primary w-12 opacity-50"></div>
-<i class="fa-solid fa-dove text-primary text-xl"></i>
-<span class="text-primary font-semibold tracking-wider text-sm uppercase">LEGAL EAGLE AI</span>
-<div class="h-px bg-primary w-12 opacity-50"></div>
-</div>
-<h2 class="text-3xl md:text-4xl font-bold text-on-surface mb-4">FREE CONSULTATION</h2>
-<p class="text-on-surface-variant mb-8 text-sm">
-             Consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco.
-          </p>
-<div class="inline-block bg-surface-container-low border border-outline-variant px-8 py-4 rounded-lg">
-<p class="text-on-surface text-sm font-semibold tracking-wide">FOR CONSULTATION VIA PHONE, PLEASE CALL <span class="text-primary">(001) 234 - 5678</span></p>
-</div>
-</div>
-</section>
-
-<!-- Testimonials Section -->
-<section class="py-20 bg-surface-container-lowest relative overflow-hidden">
-<!-- Faint background pattern/image can go here if needed -->
-<div class="max-w-7xl mx-auto px-margin-desktop relative z-10">
-<div class="flex items-center justify-center gap-4 mb-16">
-<div class="h-px bg-primary w-16 md:w-32 opacity-50"></div>
-<h2 class="text-3xl font-bold text-on-surface text-center">What clients says</h2>
-<div class="h-px bg-primary w-16 md:w-32 opacity-50"></div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<!-- Testimonial 1 -->
-<div class="bg-surface-container p-8 rounded-xl relative">
-<i class="fa-solid fa-quote-left testimonial-quotes"></i>
-<p class="text-on-surface-variant text-sm italic mb-6 relative z-10 leading-relaxed">
-              Adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.
+  <!-- Results Section -->
+  <section class="py-20 px-margin-desktop max-w-7xl mx-auto">
+  <div class="max-w-3xl mb-16">
+  <div class="flex items-center gap-4 mb-4">
+  <i class="fa-solid fa-dove text-primary text-xl"></i>
+  <span class="text-primary font-semibold tracking-wider text-sm uppercase">LEGAL EAGLE AI</span>
+  <div class="h-px bg-primary w-12 opacity-50"></div>
+  </div>
+  <h2 class="text-3xl md:text-4xl font-bold text-on-surface mb-6 leading-tight">OUR PROVEN EXPERIENCE &amp; RESULTS-DRIVEN APPROACH HELP CUSTOMERS WITH EFFECTIVE LEGAL SOLUTIONS</h2>
+  <p class="text-on-surface-variant text-sm leading-relaxed">
+              Ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat.
             </p>
-<div class="flex items-center gap-3">
-<i class="fa-solid fa-user-circle text-primary text-2xl"></i>
-<div>
-<h4 class="text-on-surface font-semibold text-sm">JOHN DEO <span class="text-on-surface-variant font-normal text-xs">- CLIENT -</span></h4>
-</div>
-</div>
-</div>
-<!-- Testimonial 2 -->
-<div class="bg-surface-container p-8 rounded-xl relative">
-<i class="fa-solid fa-quote-left testimonial-quotes"></i>
-<p class="text-on-surface-variant text-sm italic mb-6 relative z-10 leading-relaxed">
-               Adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.
-             </p>
-<div class="flex items-center gap-3">
-<i class="fa-solid fa-user-circle text-primary text-2xl"></i>
-<div>
-<h4 class="text-on-surface font-semibold text-sm">JOHN DEO <span class="text-on-surface-variant font-normal text-xs">- CLIENT -</span></h4>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+  <div class="order-2 lg:order-1">
+  <div class="flex items-center gap-4 mb-4">
+  <i class="fa-solid fa-dove text-primary text-xl"></i>
+  <span class="text-primary font-semibold tracking-wider text-sm uppercase">LEGAL EAGLE AI</span>
+  <div class="h-px bg-primary w-12 opacity-50"></div>
+  </div>
+  <h3 class="text-2xl font-bold text-on-surface mb-6">WE ARE A DEDICATED TEAM WITH SKILLS</h3>
+  <p class="text-on-surface-variant text-sm leading-relaxed">
+                  Consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco.
+               </p>
+  </div>
+  <div class="order-1 lg:order-2">
+  <img alt="Dedicated legal team" class="rounded-lg shadow-lg w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCA8jGqckUsXxBc0-ztDZ3KkZdI16GBocMszrS83TMyUVbVcMwLBGOxcr3biHhe-SSRAfg9H9Eu7D1jqCakpunP-1PW0eRzGZSsfzqLAEPoqmYEjuIq8aovCAgBB1p631fFSGALZx7cXsgSoFjiNTFoF_3SnyNv8_pe8sutab7T-I2w6sywdncQZWR_3jrn5hCMEWPrjQYXbjg1jVXeUqrCcBY2JU3j7hFt4zhPiWWC-pHqYre_1Zoqrg"/>
+  </div>
+  </div>
+  </section>
 
-<!-- Client Logos Section -->
-<section class="py-12 bg-surface border-y border-outline-variant">
-<div class="max-w-7xl mx-auto px-margin-desktop flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-300">
-<i class="fa-brands fa-aws text-4xl text-on-surface hover:text-primary transition-colors"></i>
-<i class="fa-brands fa-google text-4xl text-on-surface hover:text-primary transition-colors"></i>
-<i class="fa-brands fa-microsoft text-4xl text-on-surface hover:text-primary transition-colors"></i>
-<i class="fa-brands fa-apple text-4xl text-on-surface hover:text-primary transition-colors"></i>
-<i class="fa-brands fa-meta text-4xl text-on-surface hover:text-primary transition-colors"></i>
-</div>
-</section>
+  <!-- Consultation CTA -->
+  <section class="py-16 bg-surface-container border-y border-outline-variant text-center px-margin-desktop">
+  <div class="max-w-4xl mx-auto">
+  <div class="flex items-center justify-center gap-4 mb-4">
+  <div class="h-px bg-primary w-12 opacity-50"></div>
+  <i class="fa-solid fa-dove text-primary text-xl"></i>
+  <span class="text-primary font-semibold tracking-wider text-sm uppercase">LEGAL EAGLE AI</span>
+  <div class="h-px bg-primary w-12 opacity-50"></div>
+  </div>
+  <h2 class="text-3xl md:text-4xl font-bold text-on-surface mb-4">FREE CONSULTATION</h2>
+  <p class="text-on-surface-variant mb-8 text-sm">
+               Consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco.
+            </p>
+  <div class="inline-block bg-surface-container-low border border-outline-variant px-8 py-4 rounded-lg">
+  <p class="text-on-surface text-sm font-semibold tracking-wide">FOR CONSULTATION VIA PHONE, PLEASE CALL <span class="text-primary">(001) 234 - 5678</span></p>
+  </div>
+  </div>
+  </section>
 
-<!-- IP Law CTA -->
-<section class="bg-primary-container py-12 px-margin-desktop">
-<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-<div class="text-center md:text-left">
-<h2 class="text-2xl md:text-3xl font-bold text-on-primary-container mb-2">WE ARE AN INTELLECTUAL PROPERTY LAW SERVICE.</h2>
-<p class="text-on-primary-container opacity-80 text-sm">Eiusmod tempor incid dunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostru exercitation ullamco</p>
+  <!-- Testimonials Section -->
+  <section class="py-20 bg-surface-container-lowest relative overflow-hidden">
+  <!-- Faint background pattern/image can go here if needed -->
+  <div class="max-w-7xl mx-auto px-margin-desktop relative z-10">
+  <div class="flex items-center justify-center gap-4 mb-16">
+  <div class="h-px bg-primary w-16 md:w-32 opacity-50"></div>
+  <h2 class="text-3xl font-bold text-on-surface text-center">What clients says</h2>
+  <div class="h-px bg-primary w-16 md:w-32 opacity-50"></div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <!-- Testimonial 1 -->
+  <div class="bg-surface-container p-8 rounded-xl relative">
+  <i class="fa-solid fa-quote-left testimonial-quotes"></i>
+  <p class="text-on-surface-variant text-sm italic mb-6 relative z-10 leading-relaxed">
+                Adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.
+              </p>
+  <div class="flex items-center gap-3">
+  <i class="fa-solid fa-user-circle text-primary text-2xl"></i>
+  <div>
+  <h4 class="text-on-surface font-semibold text-sm">JOHN DEO <span class="text-on-surface-variant font-normal text-xs">- CLIENT -</span></h4>
+  </div>
+  </div>
+  </div>
+  <!-- Testimonial 2 -->
+  <div class="bg-surface-container p-8 rounded-xl relative">
+  <i class="fa-solid fa-quote-left testimonial-quotes"></i>
+  <p class="text-on-surface-variant text-sm italic mb-6 relative z-10 leading-relaxed">
+                 Adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.
+               </p>
+  <div class="flex items-center gap-3">
+  <i class="fa-solid fa-user-circle text-primary text-2xl"></i>
+  <div>
+  <h4 class="text-on-surface font-semibold text-sm">JOHN DEO <span class="text-on-surface-variant font-normal text-xs">- CLIENT -</span></h4>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </section>
+
+  <!-- Client Logos Section -->
+  <section class="py-12 bg-surface border-y border-outline-variant">
+  <div class="max-w-7xl mx-auto px-margin-desktop flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-300">
+  <i class="fa-brands fa-aws text-4xl text-on-surface hover:text-primary transition-colors"></i>
+  <i class="fa-brands fa-google text-4xl text-on-surface hover:text-primary transition-colors"></i>
+  <i class="fa-brands fa-microsoft text-4xl text-on-surface hover:text-primary transition-colors"></i>
+  <i class="fa-brands fa-apple text-4xl text-on-surface hover:text-primary transition-colors"></i>
+  <i class="fa-brands fa-meta text-4xl text-on-surface hover:text-primary transition-colors"></i>
+  </div>
+  </section>
+
+  <!-- IP Law CTA -->
+  <section class="bg-primary-container py-12 px-margin-desktop">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+  <div class="text-center md:text-left">
+  <h2 class="text-2xl md:text-3xl font-bold text-on-primary-container mb-2">WE ARE AN INTELLECTUAL PROPERTY LAW SERVICE.</h2>
+  <p class="text-on-primary-container opacity-80 text-sm">Eiusmod tempor incid dunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostru exercitation ullamco</p>
+  </div>
+  <a class="inline-block border-2 border-on-primary-container text-on-primary-container hover:bg-on-primary-container hover:text-primary-container px-8 py-3 rounded font-medium transition-colors duration-200 uppercase text-sm tracking-wide shrink-0 no-underline" href="#">
+               Hire The Attorney
+            </a>
+  </div>
+  </section>
 </div>
-<a class="inline-block border-2 border-on-primary-container text-on-primary-container hover:bg-on-primary-container hover:text-primary-container px-8 py-3 rounded font-medium transition-colors duration-200 uppercase text-sm tracking-wide shrink-0 no-underline" href="#">
-             Hire The Attorney
-          </a>
-</div>
-</section>
