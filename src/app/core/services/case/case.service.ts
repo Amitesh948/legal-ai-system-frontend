@@ -59,6 +59,16 @@ export class CaseService {
     return this.http.post(`${this.apiUrl}/cases/${caseId}/assign`, { advocate_user_id: advocateUserId });
   }
 
+  /** Admin: Force override case status */
+  overrideCaseStatusAdmin(caseId: string, status: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/admin/cases/${caseId}/status`, { status });
+  }
+
+  /** Admin: Delete/Archive a case */
+  deleteCaseAdmin(caseId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/admin/cases/${caseId}`);
+  }
+
   // Chat Messaging
   getCaseMessages(caseId: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/cases/${caseId}/messages`);

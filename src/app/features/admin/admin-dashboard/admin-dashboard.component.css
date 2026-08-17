@@ -512,3 +512,15 @@
   border: none;
   border-radius: 0;
 }
+
+.override-select {
+  width: 140px;
+}
+.override-select ::ng-deep .mat-mdc-text-field-wrapper {
+  padding: 0 8px;
+  background-color: transparent;
+}
+.override-select ::ng-deep .mat-mdc-select-value {
+  font-size: 13px;
+  font-weight: 600;
+}

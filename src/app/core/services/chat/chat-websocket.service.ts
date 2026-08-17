@@ -32,9 +32,9 @@ export class ChatWebSocketService {
   constructor() {
     // Determine WS protocol based on HTTP protocol
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    // If environment.apiUrl has protocol, replace it
-    const url = environment.apiUrl.replace(/^https?:\/\//, '');
-    this.wsUrl = `${protocol}//${url}/api/v1/cases/ws/`;
+    // Extract just the host:port from the apiUrl
+    const url = new URL(environment.apiUrl);
+    this.wsUrl = `${protocol}//${url.host}${url.pathname}/cases/ws/`;
   }
 
   public connect(caseId: string): void {

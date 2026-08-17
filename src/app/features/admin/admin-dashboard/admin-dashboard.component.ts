@@ -20,6 +20,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { CaseService } from '../../../core/services/case/case.service';
 import { AuthService } from '../../../core/services/auth/auth.service';
@@ -27,6 +29,7 @@ import { AdvocateService } from '../../../core/services/advocate/advocate.servic
 
 import { AuditLogService, AuditLog } from '../../../core/services/audit-log/audit-log.service';
 import { AdminService } from '../../../core/services/admin/admin.service';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -50,7 +53,9 @@ import { AdminService } from '../../../core/services/admin/admin.service';
     MatListModule,
     MatSidenavModule,
     MatBadgeModule,
-    MatMenuModule
+    MatMenuModule,
+    MatInputModule,
+    MatTooltipModule
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css'],
@@ -75,6 +80,19 @@ export class AdminDashboardComponent implements OnInit {
   // Dynamic Notifications
   unreadNotifications = 0;
   recentNotifications: any[] = [];
+
+  // Filtering
+  searchQuery = '';
+  statusFilter = 'all';
+
+  get filteredCases() {
+    return this.cases.filter(c => {
+      const matchesSearch = c.title?.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
+                            c.id?.toLowerCase().includes(this.searchQuery.toLowerCase());
+      const matchesStatus = this.statusFilter === 'all' || c.status === this.statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }
 
   isLoading = true;
   isAssigning = false;
@@ -183,6 +201,65 @@ export class AdminDashboardComponent implements OnInit {
         console.error('Assignment failed', err);
         this.snackBar.open('Failed to assign case', 'Close', { duration: 3000 });
         this.isAssigning = false;
+      }
+    });
+  }
+
+  availableStatuses = [
+    'new',
+    'payment_pending',
+    'payment_completed',
+    'payment_failed',
+    'documents_uploaded',
+    'ai_processing',
+    'under_review',
+    'opinion_generated',
+    'report_generated',
+    'completed',
+    'cancelled'
+  ];
+
+  overrideCaseStatus(caseId: string, newStatus: string) {
+    if (!caseId || !newStatus) return;
+    
+    this.caseService.overrideCaseStatusAdmin(caseId, newStatus).subscribe({
+      next: () => {
+        this.snackBar.open(`Case status forced to ${newStatus}`, 'Close', { duration: 3000 });
+        const index = this.cases.findIndex(c => c.id === caseId);
+        if (index !== -1) {
+          this.cases[index].status = newStatus;
+        }
+      },
+      error: () => {
+        this.snackBar.open('Failed to override status.', 'Close', { duration: 3000 });
+      }
+    });
+  }
+
+  deleteCase(caseId: string) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '450px',
+      data: {
+        title: 'Delete Case',
+        message: 'Are you absolutely sure you want to permanently delete this case? This action cannot be undone.',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        isDestructive: true
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.caseService.deleteCaseAdmin(caseId).subscribe({
+          next: () => {
+            this.snackBar.open('Case deleted successfully', 'Close', { duration: 3000 });
+            this.cases = this.cases.filter(c => c.id !== caseId);
+          },
+          error: (err) => {
+            console.error('Failed to delete case', err);
+            this.snackBar.open('Failed to delete case.', 'Close', { duration: 3000 });
+          }
+        });
       }
     });
   }

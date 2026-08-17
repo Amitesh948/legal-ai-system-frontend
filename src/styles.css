@@ -65,10 +65,10 @@ html.dark {
   --color-primary-light: #9eefff;
 }
 
-html, body { 
-  height: 100%; 
-  margin: 0; 
+html, body {
+  margin: 0;
   padding: 0;
+  min-height: 100vh;
   font-family: 'Inter', sans-serif;
   background-color: var(--color-bg-main);
   color: var(--color-text-main);
@@ -183,4 +183,30 @@ html.dark .mat-mdc-option:hover:not(.mdc-list-item--disabled), html.dark .mat-md
 
 html.dark h1, html.dark h2, html.dark h3, html.dark h4, html.dark h5, html.dark h6 {
   color: var(--color-primary);
+}
+
+/* Fix for Material Dialogs appearing behind other elements */
+.cdk-overlay-container {
+  z-index: 99999 !important;
+}
+
+/*
+ * Fix: mat-select dropdown not opening inside mat-dialog.
+ * The dialog backdrop intercepts pointer events and the select panel
+ * renders behind the dialog's overlay pane. Force every new overlay
+ * pane (select panel is always the last child) to sit above the dialog.
+ */
+.cdk-overlay-connected-position-bounding-box {
+  z-index: 100000 !important;
+}
+
+.mat-mdc-select-panel,
+.mat-select-panel {
+  z-index: 100001 !important;
+  position: relative;
+}
+
+/* Ensure dialog backdrop does not block select interactions */
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+  pointer-events: auto;
 }

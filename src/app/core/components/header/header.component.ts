@@ -1,7 +1,8 @@
 import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -12,11 +13,24 @@ import { AuthService } from '../../services/auth/auth.service';
 })
 export class HeaderComponent implements OnInit {
   private authService = inject(AuthService);
-  isLoggedIn = false; 
+  private router = inject(Router);
+  isLoggedIn = false;
+  isAuthPage = false;
   
   ngOnInit() {
     this.authService.isAuthenticated$.subscribe(status => {
       this.isLoggedIn = status;
+    });
+
+    // Track if we are on an auth page (login/register)
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      const url = event.urlAfterRedirects;
+      this.isAuthPage = url.includes('/login') || url.includes('/register');
+      // Close any open dropdowns when navigating
+      this.showNotifications = false;
+      this.showProfileMenu = false;
     });
   }
   

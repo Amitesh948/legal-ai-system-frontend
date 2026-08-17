@@ -26,7 +26,14 @@ export class AppComponent {
     ).subscribe((event: any) => {
       const url = event.urlAfterRedirects;
       // Hide header/footer on internal application routes (dashboards, cases, onboarding)
-      if (url.includes('/dashboard') || url.includes('/cases') || url.includes('/admin') || url.includes('/advocate') || (url.includes('/profile') && !url.includes('/profiles')) || url.includes('/settings')) {
+      if (
+        url.includes('/dashboard') || 
+        url.includes('/cases') || 
+        url.includes('/admin') || 
+        url.includes('/advocate') || 
+        (url.includes('/profile') && !url.includes('/profiles')) || 
+        url.includes('/settings')
+      ) {
         this.showHeaderFooter = false;
       } else {
         this.showHeaderFooter = true;

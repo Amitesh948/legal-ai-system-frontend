@@ -223,7 +223,8 @@ export class CaseDetailsComponent implements OnInit, OnDestroy {
       next: () => {
         this.newMessage = '';
         this.isSendingMessage = false;
-        // The message will be appended via WebSocket broadcast
+        // Instantly reload messages to show the one we just sent
+        this.loadMessages(this.caseId!);
       },
       error: (err) => {
         console.error('Failed to send message', err);

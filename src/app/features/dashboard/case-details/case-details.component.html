@@ -19,7 +19,7 @@
   </div>
 
     <!-- Payment Success Indicator -->
-    <div *ngIf="(userRole === 'client' || userRole === 'advocate' || userRole === 'admin') && caseData?.status !== 'new' && caseData?.status !== 'under_review' && caseData?.status !== 'payment_pending'" class="payment-success-banner" style="margin-bottom: 24px;">
+    <div *ngIf="(userRole === 'client' || userRole === 'advocate' || userRole === 'admin') && caseData?.status === 'payment_completed'" class="payment-success-banner" style="margin-bottom: 24px;">
       <mat-card class="premium-card" style="background-color: #f0fdf4; border-left: 4px solid #22c55e;">
         <mat-card-header>
           <mat-icon style="margin-right: 12px; color: #22c55e; margin-top: 5px;">check_circle</mat-icon>
