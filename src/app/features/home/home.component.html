@@ -1,13 +1,14 @@
 <!-- BEGIN: Hero Section -->
 <section class="hero-bg h-[600px] flex items-center justify-center text-center px-4 relative mt-16" [style.background-image]="homeData.hero?.image_url ? 'url(' + homeData.hero.image_url + ')' : ''">
-<div class="max-w-3xl">
-<p class="text-sm md:text-base mb-4 font-medium text-on-background opacity-90 whitespace-pre-wrap">
+<!-- Added a subtle white glow behind the text to ensure it's readable even if the image has dark spots -->
+<div class="max-w-3xl relative z-10 bg-white/70 backdrop-blur-sm p-8 rounded-xl shadow-lg border border-white/20">
+<p class="text-sm md:text-base mb-4 font-bold text-slate-900 uppercase tracking-wider whitespace-pre-wrap">
         {{ homeData.hero?.subtitle || 'Expert AI-powered legal assistance.' }}
       </p>
-<h1 class="text-4xl md:text-6xl font-bold text-on-background mb-8 leading-tight">
+<h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 mb-8 leading-tight">
         {{ homeData.hero?.title || 'BEST LEGAL ADVISERS\nSINCE 2007' }}
       </h1>
-<button class="border border-on-background text-on-background px-8 py-3 rounded text-sm font-bold uppercase tracking-wider hover:bg-on-background hover:text-surface transition-colors cursor-pointer" [routerLink]="homeData.hero?.primary_cta_link || '/about'">
+<button class="bg-primary text-white px-8 py-3 rounded text-sm font-bold uppercase tracking-wider hover:bg-slate-900 hover:text-white transition-colors cursor-pointer shadow-md" [routerLink]="homeData.hero?.primary_cta_link || '/about'">
         {{ homeData.hero?.primary_cta_text || 'Read More' }}
       </button>
 </div>
@@ -15,60 +16,60 @@
 <!-- END: Hero Section -->
 
 <!-- BEGIN: Services Section -->
-<section class="py-20 bg-background">
+<section class="py-20 bg-slate-50">
 <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-16 max-w-[1440px]">
 <div>
 <div class="flex flex-col items-center lg:items-start mb-6">
 <i class="fa-solid fa-dove text-primary mb-2"></i>
-<span class="text-xs font-bold uppercase tracking-widest text-outline mb-2">Legal Eagle</span>
-<h2 class="text-3xl lg:text-4xl font-bold text-on-background leading-tight text-center lg:text-left">
+<span class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Legal Eagle</span>
+<h2 class="text-3xl lg:text-4xl font-bold text-slate-900 leading-tight text-center lg:text-left">
             OUR PROVEN EXPERIENCE &amp;<br/>RESULTS-DRIVEN APPROACH<br/>HELP CUSTOMERS WITH<br/>EFFECTIVE LEGAL SOLUTIONS
           </h2>
 </div>
-<p class="text-outline text-sm leading-relaxed mb-8 text-center lg:text-left">
+<p class="text-slate-600 text-sm leading-relaxed mb-8 text-center lg:text-left">
           Ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat.
         </p>
 <div class="flex justify-center lg:justify-start">
-<button class="bg-primary text-on-primary border-none px-6 py-3 rounded text-sm font-bold uppercase tracking-wider hover:bg-opacity-90 transition-colors cursor-pointer" routerLink="/register">
+<button class="bg-primary text-white border-none px-6 py-3 rounded text-sm font-bold uppercase tracking-wider hover:bg-opacity-90 transition-colors cursor-pointer" routerLink="/register">
             Get A Free Consultation
           </button>
 </div>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
 <div class="flex gap-4">
-<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center shrink-0 border border-surface-container-highest">
+<div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shrink-0 border border-slate-200">
 <i class="fa-solid fa-handshake text-primary text-xl"></i>
 </div>
 <div>
-<h3 class="text-on-background font-bold mb-2">MERGERS AND ACQUISITIONS</h3>
-<p class="text-outline text-sm">Magna aliqua. Ut enim ad minim veniam quis nostrud exercit tion ullamco laboris nisi ut aliquip consequat.</p>
+<h3 class="text-slate-900 font-bold mb-2">MERGERS AND ACQUISITIONS</h3>
+<p class="text-slate-600 text-sm">Magna aliqua. Ut enim ad minim veniam quis nostrud exercit tion ullamco laboris nisi ut aliquip consequat.</p>
 </div>
 </div>
 <div class="flex gap-4">
-<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center shrink-0 border border-surface-container-highest">
+<div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shrink-0 border border-slate-200">
 <i class="fa-solid fa-shield-halved text-primary text-xl"></i>
 </div>
 <div>
-<h3 class="text-on-background font-bold mb-2">DATA SECURITY AND PRIVACY</h3>
-<p class="text-outline text-sm">Magna aliqua. Ut enim ad minim veniam quis nostrud exercit tion ullamco laboris nisi ut aliquip consequat.</p>
+<h3 class="text-slate-900 font-bold mb-2">DATA SECURITY AND PRIVACY</h3>
+<p class="text-slate-600 text-sm">Magna aliqua. Ut enim ad minim veniam quis nostrud exercit tion ullamco laboris nisi ut aliquip consequat.</p>
 </div>
 </div>
 <div class="flex gap-4">
-<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center shrink-0 border border-surface-container-highest">
+<div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shrink-0 border border-slate-200">
 <i class="fa-solid fa-stethoscope text-primary text-xl"></i>
 </div>
 <div>
-<h3 class="text-on-background font-bold mb-2">HEALTH CARE SOLUTIONS</h3>
-<p class="text-outline text-sm">Magna aliqua. Ut enim ad minim veniam quis nostrud exercit tion ullamco laboris nisi ut aliquip consequat.</p>
+<h3 class="text-slate-900 font-bold mb-2">HEALTH CARE SOLUTIONS</h3>
+<p class="text-slate-600 text-sm">Magna aliqua. Ut enim ad minim veniam quis nostrud exercit tion ullamco laboris nisi ut aliquip consequat.</p>
 </div>
 </div>
 <div class="flex gap-4">
-<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center shrink-0 border border-surface-container-highest">
+<div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shrink-0 border border-slate-200">
 <i class="fa-solid fa-file-shield text-primary text-xl"></i>
 </div>
 <div>
-<h3 class="text-on-background font-bold mb-2">INFORMATION GOVERNANCE</h3>
-<p class="text-outline text-sm">Magna aliqua. Ut enim ad minim veniam quis nostrud exercit tion ullamco laboris nisi ut aliquip consequat.</p>
+<h3 class="text-slate-900 font-bold mb-2">INFORMATION GOVERNANCE</h3>
+<p class="text-slate-600 text-sm">Magna aliqua. Ut enim ad minim veniam quis nostrud exercit tion ullamco laboris nisi ut aliquip consequat.</p>
 </div>
 </div>
 </div>
@@ -77,44 +78,44 @@
 <!-- END: Services Section -->
 
 <!-- BEGIN: Info Cards Section -->
-<section class="py-20 bg-surface-container-lowest">
+<section class="py-20 bg-white">
 <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-[1440px]">
-<div class="bg-surface-container p-10 flex flex-col items-center text-center rounded border border-surface-container-highest relative overflow-hidden group">
-<div class="absolute top-0 right-0 w-16 h-16 bg-surface-container-high rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
-<h3 class="text-xl font-bold text-on-background mb-4 uppercase relative z-10">Get In Touch With Us</h3>
-<p class="text-outline text-sm mb-8 leading-relaxed relative z-10">
+<div class="bg-slate-50 p-10 flex flex-col items-center text-center rounded border border-slate-200 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-16 h-16 bg-slate-100 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
+<h3 class="text-xl font-bold text-slate-900 mb-4 uppercase relative z-10">Get In Touch With Us</h3>
+<p class="text-slate-600 text-sm mb-8 leading-relaxed relative z-10">
           Lorem ipsum dolor sit amet consectetur adipisicing elit sed don eiusmod tempor enim minim veniam quis elit sed do eiusmod tempor incididunt ut labore.
         </p>
-<button class="border border-primary text-primary bg-transparent px-6 py-2 rounded text-sm font-bold hover:bg-primary hover:text-on-primary transition-colors mt-auto relative z-10 cursor-pointer">
+<button class="border border-primary text-primary bg-transparent px-6 py-2 rounded text-sm font-bold hover:bg-primary hover:text-white transition-colors mt-auto relative z-10 cursor-pointer">
           CALL US : +011 - 234 - 5678
         </button>
 </div>
-<div class="bg-surface-container p-10 flex flex-col items-center text-center rounded border border-surface-container-highest relative overflow-hidden group">
-<div class="absolute top-0 right-0 w-16 h-16 bg-surface-container-high rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
-<h3 class="text-xl font-bold text-on-background mb-8 uppercase relative z-10">Our Working Hours</h3>
-<ul class="text-outline text-sm space-y-4 w-full text-left relative z-10 list-none p-0">
-<li class="flex justify-between border-b border-surface-container-highest pb-2">
+<div class="bg-slate-50 p-10 flex flex-col items-center text-center rounded border border-slate-200 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-16 h-16 bg-slate-100 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
+<h3 class="text-xl font-bold text-slate-900 mb-8 uppercase relative z-10">Our Working Hours</h3>
+<ul class="text-slate-600 text-sm space-y-4 w-full text-left relative z-10 list-none p-0">
+<li class="flex justify-between border-b border-slate-200 pb-2">
 <span>From Monday To Thursday</span>
 <span>9:00 - 21:00</span>
 </li>
-<li class="flex justify-between border-b border-surface-container-highest pb-2">
+<li class="flex justify-between border-b border-slate-200 pb-2">
 <span>Friday And Saturday</span>
-<span>11:00 - 18:00</span>
+<span>9:00 - 18:00</span>
 </li>
-<li class="flex justify-between pt-2">
+<li class="flex justify-between pb-2">
 <span>Sunday</span>
-<span>Closed</span>
+<span>10:00 - 15:00</span>
 </li>
 </ul>
 </div>
-<div class="bg-surface-container p-10 flex flex-col items-center text-center rounded border border-surface-container-highest relative overflow-hidden group">
-<div class="absolute top-0 right-0 w-16 h-16 bg-surface-container-high rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
-<h3 class="text-xl font-bold text-on-background mb-4 uppercase relative z-10">If You Need A Legal Assistance?</h3>
-<p class="text-outline text-sm mb-8 leading-relaxed relative z-10">
-          GET IN TOUCH WITH US Lorem ipsum dolor sit amet consectetur adipisicing elit sed don eiusmod tempor enim minim veniam quis elit sed do eiusmod tempor incididunt ut labore.
+<div class="bg-primary p-10 flex flex-col items-center text-center rounded relative overflow-hidden group text-white">
+<div class="absolute top-0 right-0 w-16 h-16 bg-primary-light rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
+<h3 class="text-xl font-bold mb-4 uppercase relative z-10">Free Live Support</h3>
+<p class="text-white/80 text-sm mb-8 leading-relaxed relative z-10">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit sed don eiusmod tempor enim minim veniam quis elit sed do eiusmod tempor incididunt ut labore.
         </p>
-<button class="border border-primary text-primary bg-transparent px-6 py-2 rounded text-sm font-bold hover:bg-primary hover:text-on-primary transition-colors mt-auto relative z-10 cursor-pointer" routerLink="/register">
-          GET YOUR APPOINTMENT
+<button class="bg-white text-primary border-none px-6 py-2 rounded text-sm font-bold uppercase hover:bg-slate-100 transition-colors mt-auto relative z-10 cursor-pointer" routerLink="/contact">
+          Find An Attorney
         </button>
 </div>
 </div>
@@ -122,20 +123,20 @@
 <!-- END: Info Cards Section -->
 
 <!-- BEGIN: Practice Areas Section -->
-<section class="py-20 bg-background" *ngIf="homeData.practice_areas?.length > 0">
+<section class="py-20 bg-slate-50" *ngIf="homeData.practice_areas?.length > 0">
 <div class="container mx-auto px-4 max-w-[1440px]">
 <div class="text-center mb-12">
 <i class="fa-solid fa-dove text-primary mb-2"></i>
-<h2 class="text-3xl font-bold text-on-background uppercase tracking-wider mb-4">Practice Areas</h2>
-<p class="text-outline text-sm">We specialize in a wide range of legal domains.</p>
+<h2 class="text-3xl font-bold text-slate-900 uppercase tracking-wider mb-4">Practice Areas</h2>
+<p class="text-slate-600 text-sm">We specialize in a wide range of legal domains.</p>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 <div class="text-center group cursor-pointer" routerLink="/practice-areas/{{pa.slug}}" *ngFor="let pa of homeData.practice_areas">
-<div class="w-16 h-16 mx-auto bg-surface-container flex items-center justify-center rounded-full mb-6 border border-surface-container-highest group-hover:border-primary transition-colors">
+<div class="w-16 h-16 mx-auto bg-white flex items-center justify-center rounded-full mb-6 border border-slate-200 group-hover:border-primary transition-colors">
   <i class="fa-solid fa-{{ pa.icon_name || 'gavel' }} text-primary text-2xl"></i>
 </div>
-<h3 class="text-lg font-bold text-on-background mb-3 uppercase group-hover:text-primary transition-colors">{{ pa.title }}</h3>
-<p class="text-outline text-sm px-4">{{ pa.short_description }}</p>
+<h3 class="text-lg font-bold text-slate-900 mb-3 uppercase group-hover:text-primary transition-colors">{{ pa.title }}</h3>
+<p class="text-slate-600 text-sm px-4">{{ pa.short_description }}</p>
 </div>
 </div>
 </div>
@@ -143,19 +144,19 @@
 <!-- END: Practice Areas Section -->
 
 <!-- BEGIN: About / Stats Section -->
-<section class="py-20 bg-surface-container-lowest">
+<section class="py-20 bg-white">
 <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-0 max-w-[1440px]">
-<div class="bg-surface-container p-8 lg:p-12 border border-surface-container-highest rounded-l lg:rounded-r-none">
+<div class="bg-slate-50 p-8 lg:p-12 border border-slate-200 rounded-l lg:rounded-r-none">
 <div class="flex gap-4 mb-8">
-<button class="border border-primary text-primary bg-transparent px-6 py-2 rounded text-sm font-bold uppercase hover:bg-primary hover:text-on-primary transition-colors cursor-pointer">We Offer</button>
-<button class="border border-outline text-outline bg-transparent px-6 py-2 rounded text-sm font-bold uppercase hover:bg-surface-container-high transition-colors cursor-pointer">We Specialize</button>
+<button class="border border-primary text-primary bg-transparent px-6 py-2 rounded text-sm font-bold uppercase hover:bg-primary hover:text-white transition-colors cursor-pointer">We Offer</button>
+<button class="border border-slate-300 text-slate-600 bg-transparent px-6 py-2 rounded text-sm font-bold uppercase hover:bg-slate-200 transition-colors cursor-pointer">We Specialize</button>
 </div>
 <img alt="Our Team" class="w-full h-auto mb-8 rounded" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLueDJQ2kTuUNDxTxMZ14rd5qb5Rdc29MznlxZf0ow598-WbFs_KHsmwn7F6LRH81LRdMAR6zzxgB1b283GjgcoWWopHIUHCJmY0egMGbP7GV5z-gzGilgTjnvGcsDN10OOmuZ-gI8lioImGbG5e6L-JiqQBR9GeaBSBkBRhma57vYUWpuz-juaMntc2-OFJMMr2W7SiJMaSJPAnXIIIWZRUw1uHjGOmiOg8-eiFKr3dQdLgKldtl4GA"/>
-<p class="text-outline text-sm leading-relaxed">
+<p class="text-slate-600 text-sm leading-relaxed">
           Consectetur adipisicing elit sed do eiusmod tempor incididunt labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris. Lorem ipsum dolor sit amet consectetur adipisicing elit, sed do eiusmod tempor incida labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco lab.
         </p>
 </div>
-<div class="stats-bg p-12 flex flex-col justify-center rounded-r lg:rounded-l-none text-on-background">
+<div class="stats-bg p-12 flex flex-col justify-center rounded-r lg:rounded-l-none text-white">
 <div class="space-y-12 pl-8 border-l-2 border-primary">
 <div>
 <div class="text-5xl font-bold mb-2">5400</div>
@@ -176,67 +177,67 @@
 <!-- END: About / Stats Section -->
 
 <!-- BEGIN: Pricing Section -->
-<section class="py-20 bg-background">
+<section class="py-20 bg-slate-50">
 <div class="container mx-auto px-4 max-w-[1440px]">
 <div class="text-center mb-16">
 <i class="fa-solid fa-dove text-primary mb-2"></i>
-<h2 class="text-3xl font-bold text-on-background uppercase tracking-wider mb-4">Pricing Detail</h2>
-<p class="text-outline text-sm">Dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt labore</p>
+<h2 class="text-3xl font-bold text-slate-900 uppercase tracking-wider mb-4">Pricing Detail</h2>
+<p class="text-slate-600 text-sm">Pain is a love, it is a result of adipiscing, but I give it in this way, at the same time, it happens to me.</p>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-<div class="bg-surface-container border border-surface-container-highest rounded text-center flex flex-col">
-<div class="bg-surface-container-high py-4 rounded-t">
-<h3 class="text-on-background font-bold uppercase tracking-wider">Standard</h3>
+<div class="bg-white border border-slate-200 rounded text-center flex flex-col">
+<div class="bg-slate-100 py-4 rounded-t">
+<h3 class="text-slate-900 font-bold uppercase tracking-wider">Standard</h3>
 </div>
 <div class="p-8 flex-grow">
 <i class="fa-solid fa-star text-primary text-3xl mb-4"></i>
-<div class="text-4xl font-bold text-on-background mb-2"><sup class="text-xl">$</sup>159</div>
-<div class="text-outline text-xs italic mb-8">per hour</div>
-<ul class="text-outline text-sm space-y-4 mb-8 list-none p-0">
+<div class="text-4xl font-bold text-slate-900 mb-2"><sup class="text-xl">$</sup>159</div>
+<div class="text-slate-500 text-xs italic mb-8">per hour</div>
+<ul class="text-slate-600 text-sm space-y-4 mb-8 list-none p-0">
 <li>100% Legal Advice From Experts</li>
 <li>Quick &amp; Free Live Support</li>
 <li>Experienced Lawyers Team</li>
 <li>All Types of Cases</li>
 </ul>
-<button class="bg-surface-container-high border border-surface-container-highest text-on-background px-6 py-2 rounded text-sm font-bold uppercase hover:bg-primary hover:text-on-primary transition-colors cursor-pointer" routerLink="/register">
+<button class="bg-slate-100 border border-slate-200 text-slate-900 px-6 py-2 rounded text-sm font-bold uppercase hover:bg-primary hover:text-white transition-colors cursor-pointer" routerLink="/register">
               More Details
             </button>
 </div>
 </div>
-<div class="bg-surface-container border border-surface-container-highest rounded text-center flex flex-col shadow-[0_0_20px_rgba(0,172,193,0.1)] relative transform md:-translate-y-4">
+<div class="bg-white border border-slate-200 rounded text-center flex flex-col shadow-xl relative transform md:-translate-y-4">
 <div class="bg-primary py-4 rounded-t">
-<h3 class="text-on-primary font-bold uppercase tracking-wider">Small Business</h3>
+<h3 class="text-white font-bold uppercase tracking-wider">Small Business</h3>
 </div>
 <div class="p-8 flex-grow">
 <i class="fa-solid fa-star text-primary text-3xl mb-4"></i>
-<div class="text-5xl font-bold text-on-background mb-2"><sup class="text-2xl">$</sup>179</div>
-<div class="text-outline text-xs italic mb-8">per hour</div>
-<ul class="text-outline text-sm space-y-4 mb-8 list-none p-0">
+<div class="text-5xl font-bold text-slate-900 mb-2"><sup class="text-2xl">$</sup>179</div>
+<div class="text-slate-500 text-xs italic mb-8">per hour</div>
+<ul class="text-slate-600 text-sm space-y-4 mb-8 list-none p-0">
 <li>100% Legal Advice From Experts</li>
 <li>Quick &amp; Free Live Support</li>
 <li>Experienced Lawyers Team</li>
 <li>All Types of Cases</li>
 </ul>
-<button class="bg-primary border-none text-on-primary px-6 py-2 rounded text-sm font-bold uppercase hover:bg-opacity-90 transition-colors cursor-pointer" routerLink="/register">
+<button class="bg-primary border-none text-white px-6 py-2 rounded text-sm font-bold uppercase hover:bg-opacity-90 transition-colors cursor-pointer" routerLink="/register">
               More Details
             </button>
 </div>
 </div>
-<div class="bg-surface-container border border-surface-container-highest rounded text-center flex flex-col">
-<div class="bg-surface-container-high py-4 rounded-t">
-<h3 class="text-on-background font-bold uppercase tracking-wider">Enterprise</h3>
+<div class="bg-white border border-slate-200 rounded text-center flex flex-col">
+<div class="bg-slate-100 py-4 rounded-t">
+<h3 class="text-slate-900 font-bold uppercase tracking-wider">Enterprise</h3>
 </div>
 <div class="p-8 flex-grow">
 <i class="fa-solid fa-star text-primary text-3xl mb-4"></i>
-<div class="text-4xl font-bold text-on-background mb-2"><sup class="text-xl">$</sup>199</div>
-<div class="text-outline text-xs italic mb-8">per hour</div>
-<ul class="text-outline text-sm space-y-4 mb-8 list-none p-0">
+<div class="text-4xl font-bold text-slate-900 mb-2"><sup class="text-xl">$</sup>199</div>
+<div class="text-slate-500 text-xs italic mb-8">per hour</div>
+<ul class="text-slate-600 text-sm space-y-4 mb-8 list-none p-0">
 <li>100% Legal Advice From Experts</li>
 <li>Quick &amp; Free Live Support</li>
 <li>Experienced Lawyers Team</li>
 <li>All Types of Cases</li>
 </ul>
-<button class="bg-surface-container-high border border-surface-container-highest text-on-background px-6 py-2 rounded text-sm font-bold uppercase hover:bg-primary hover:text-on-primary transition-colors cursor-pointer" routerLink="/register">
+<button class="bg-slate-100 border border-slate-200 text-slate-900 px-6 py-2 rounded text-sm font-bold uppercase hover:bg-primary hover:text-white transition-colors cursor-pointer" routerLink="/register">
               More Details
             </button>
 </div>
@@ -250,24 +251,24 @@
 <section class="testimonial-bg py-24 relative">
 <div class="container mx-auto px-4 text-center max-w-[1440px]">
 <div class="flex items-center justify-center gap-4 mb-12">
-<div class="h-px bg-outline w-12"></div>
-<h2 class="text-2xl font-bold text-on-background uppercase tracking-widest">What clients says</h2>
-<div class="h-px bg-outline w-12"></div>
+<div class="h-px bg-white/20 w-12"></div>
+<h2 class="text-2xl font-bold text-white uppercase tracking-widest">What clients says</h2>
+<div class="h-px bg-white/20 w-12"></div>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
 <div>
-<p class="text-outline text-sm italic mb-6 leading-relaxed">
+<p class="text-slate-300 text-sm italic mb-6 leading-relaxed">
             Adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.
           </p>
 <div class="text-primary text-xl mb-2"><i class="fa-solid fa-quote-left"></i></div>
-<h4 class="text-on-background text-xs font-bold uppercase tracking-widest">John Deo - Client -</h4>
+<h4 class="text-white text-xs font-bold uppercase tracking-widest">John Deo - Client -</h4>
 </div>
 <div>
-<p class="text-outline text-sm italic mb-6 leading-relaxed">
+<p class="text-slate-300 text-sm italic mb-6 leading-relaxed">
             Adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.
           </p>
 <div class="text-primary text-xl mb-2"><i class="fa-solid fa-quote-left"></i></div>
-<h4 class="text-on-background text-xs font-bold uppercase tracking-widest">John Deo - Client -</h4>
+<h4 class="text-white text-xs font-bold uppercase tracking-widest">John Deo - Client -</h4>
 </div>
 </div>
 </div>
@@ -275,7 +276,7 @@
 <!-- END: Testimonials Section -->
 
 <!-- BEGIN: Partners Section -->
-<section class="py-12 bg-background border-b border-surface-container-highest">
+<section class="py-12 bg-slate-50 border-b border-surface-container-highest">
 <div class="container mx-auto px-4 max-w-[1440px] flex flex-wrap justify-center gap-8 opacity-50 grayscale hover:grayscale-0 transition-all duration-300">
 <img alt="Partner Logo 1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCK1h7qbTTA8U4MZHxtUXSv-7RHRi4JV-c7gMlKTkOEY5Ih0pmIjCgsRUwquBmfKijqRoPdcvW1WA4LvjVhBExRVa1bUoO9WdkDd_l24SOlba9mHIHx83dbs__siLgGQEXprkMZQSdmrPvQGYa1lAD81sPC9R4QXkxAaHsKxlvo0T8t9h-a94Hmj5CeGfCOqV7XJeXw7OkqhXsbGcHgz3FCUAhCwXRg7_qj5XV3BvNJy5rky-T5C_5xXA"/>
 <img alt="Partner Logo 2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSVWQeCc-CP35nx8rv-s46tiBQDqcNH3akgtsmff27s6T56rSZWy3g988Eh0R9PkCu1bJIQLAZZ3B54nVFxil_ox2z1Cu0HLDhjozA8z8fTJXw3c6m4TPt2CSsqLhFTZE-8HpssCiqVTYpgJROr7ZAp8ItC_C1dL1-aeck2Hl9HelRMWNJzCgVJQuaDwTTZ73Za0CoKf1ZbdppMXQoz6yR1BPiAm_rY3lr8bohl-8fFPEEVIURJCxcDg"/>
@@ -286,16 +287,16 @@
 <!-- END: Partners Section -->
 
 <!-- BEGIN: FAQ Section -->
-<section class="py-20 bg-surface-container-lowest" *ngIf="homeData.faqs?.length > 0">
+<section class="py-20 bg-white" *ngIf="homeData.faqs?.length > 0">
 <div class="container mx-auto px-4 max-w-[1440px]">
   <div class="text-center mb-12">
     <i class="fa-solid fa-circle-question text-primary mb-2 text-3xl"></i>
-    <h2 class="text-3xl font-bold text-on-background uppercase tracking-wider mb-4">Frequently Asked Questions</h2>
+    <h2 class="text-3xl font-bold text-slate-900 uppercase tracking-wider mb-4">Frequently Asked Questions</h2>
   </div>
   <div class="max-w-3xl mx-auto flex flex-col gap-6">
-    <div *ngFor="let faq of homeData.faqs" class="bg-surface p-6 rounded shadow-sm border border-outline-variant">
+    <div *ngFor="let faq of homeData.faqs" class="bg-slate-50 p-6 rounded shadow-sm border border-slate-200">
       <h3 class="text-lg font-bold text-primary mb-2">{{ faq.question }}</h3>
-      <p class="text-sm text-on-surface-variant leading-relaxed">{{ faq.answer }}</p>
+      <p class="text-sm text-slate-600 leading-relaxed">{{ faq.answer }}</p>
     </div>
   </div>
 </div>

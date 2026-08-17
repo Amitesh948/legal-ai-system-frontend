@@ -1,14 +1,17 @@
 .hero-bg {
+    background-color: #0f172a;
     background-image: linear-gradient(rgba(11, 19, 38, 0.7), rgba(11, 19, 38, 0.7)), url('https://lh3.googleusercontent.com/aida-public/AB6AXuBaFIIerAlb63P-cEas0K_SgjmJcLUrIgpmNgpvJKL7oTcy0LfI-Wm3E4XrXVR1YhK3nyFCzGzXdofFNZN96ryuTCdAeEoTo4PePHH_--tLg48umerZBlvrnXDk2KgJGutVsWDzvjka4r4HENlnWr5nP2IN4fSkadIWcJYv8__Nm94nIG8MRp1Ih6hZpmVidMcsS0sHi8cZ9eitjPOfB8wWxlrZSAGBZBq6zyZmickpnKRWhSvHePOkag');
     background-size: cover;
     background-position: center;
 }
 .stats-bg {
+    background-color: #0f172a;
     background-image: linear-gradient(rgba(11, 19, 38, 0.8), rgba(11, 19, 38, 0.8)), url('https://lh3.googleusercontent.com/aida-public/AB6AXuCBtjyiJcqB8W31Tf_A1wrJ12fVgAmUxkidivP_f6IYZPDlaj7dfO9RazMhEbCJbQN9eXOE5aoIyOtNQT98GIc7WEIYH-rS-sWP7c28MIXmUXNGAG21UDTVyxOHhAJmjgq8wqDdoSw47auJ_vSiw6GTOdaESWgc4oae1QVFeWjnmzndwAkLdAdftvMYWAZSWX4IZtEAleeEc5AQ1_89CUbj4mTZYBN3h8FuVuKi37mcaIhAzzhyX9rg7A');
     background-size: cover;
     background-position: center;
 }
 .testimonial-bg {
+    background-color: #0f172a;
     background-image: linear-gradient(rgba(11, 19, 38, 0.9), rgba(11, 19, 38, 0.9)), url('https://lh3.googleusercontent.com/aida-public/AB6AXuDaR8o-svTteDpXUEBECIAk-ptSlcIcnRHmcCGUEho6Mmj4V8S5TlWgZ_BW42YwOhq9dUB9auU9SpDzInAXOeQU6zQQQ5w_Gzngb1YIImDoDnLeNPSzMlo4jzJqTgDgMSqAAXvWhXAcBPo60B2xON0eFxohTIXmBSzBT-m2I2lLmbbdXuHXtxHZMj6ZN94IuW7IhSTEtfXjw7t_tJQ3Bb0OP-iuJG1B1zGt9F7F698vqA1P8qgOpw92fw');
     background-size: cover;
     background-position: center;
