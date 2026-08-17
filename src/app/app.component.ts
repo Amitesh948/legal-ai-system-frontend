@@ -6,6 +6,7 @@ import { FooterComponent } from './core/components/footer/footer.component';
 import { filter } from 'rxjs/operators';
 
 import { AuthService } from './core/services/auth/auth.service';
+import { BroadcastService } from './core/services/broadcast/broadcast.service';
 
 @Component({
   selector: 'app-root',
@@ -19,8 +20,11 @@ export class AppComponent {
   showHeaderFooter = true;
   private router = inject(Router);
   private authService = inject(AuthService);
+  private broadcastService = inject(BroadcastService);
 
   constructor() {
+    this.broadcastService.connect();
+    
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {

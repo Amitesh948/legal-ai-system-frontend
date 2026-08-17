@@ -30,6 +30,10 @@ export class AdvocateService {
     return this.http.post(`${this.apiUrl}/onboarding/submit`, {});
   }
 
+  uploadDocuments(formData: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/onboarding/documents`, formData);
+  }
+
   // --- Admin Endpoints ---
   
   getAllAdvocatesAdmin(): Observable<any> {

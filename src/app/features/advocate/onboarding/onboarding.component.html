@@ -134,7 +134,46 @@
           </form>
         </mat-step>
 
-        <!-- Step 4: Verification Submission -->
+        <!-- Step 4: Document Uploads -->
+        <mat-step>
+          <ng-template matStepLabel>Upload Documents</ng-template>
+          
+          <div class="form-grid" style="margin-top: 16px;">
+            <p style="grid-column: 1 / -1; color: #616161; font-size: 14px; margin-bottom: 16px;">
+              Please upload clear PDF or image copies of your official documents. These are required for administrative verification.
+            </p>
+
+            <div class="file-upload-field" style="grid-column: 1 / -1; margin-bottom: 16px;">
+              <label style="display: block; font-weight: 500; margin-bottom: 8px;">1. Enrollment Certificate (Required)</label>
+              <input type="file" (change)="onFileSelected($event, 'enrollment')" accept=".pdf,image/*">
+            </div>
+
+            <div class="file-upload-field" style="margin-bottom: 16px;">
+              <label style="display: block; font-weight: 500; margin-bottom: 8px;">2. Government ID / PAN (Required)</label>
+              <input type="file" (change)="onFileSelected($event, 'govid')" accept=".pdf,image/*">
+            </div>
+
+            <div class="file-upload-field" style="margin-bottom: 16px;">
+              <label style="display: block; font-weight: 500; margin-bottom: 8px;">3. LLB Degree Certificate (Required)</label>
+              <input type="file" (change)="onFileSelected($event, 'degree')" accept=".pdf,image/*">
+            </div>
+
+            <div class="file-upload-field" style="grid-column: 1 / -1; margin-bottom: 16px;">
+              <label style="display: block; font-weight: 500; margin-bottom: 8px;">4. Certificate of Practice (Optional / If available)</label>
+              <input type="file" (change)="onFileSelected($event, 'cop')" accept=".pdf,image/*">
+            </div>
+          </div>
+
+          <div class="stepper-actions">
+            <button mat-button matStepperPrevious [disabled]="isUploading">Back</button>
+            <button mat-raised-button color="primary" [disabled]="isUploading" (click)="saveDocuments(stepper)">
+              <span *ngIf="!isUploading">Upload & Next</span>
+              <mat-spinner *ngIf="isUploading" diameter="20"></mat-spinner>
+            </button>
+          </div>
+        </mat-step>
+
+        <!-- Step 5: Verification Submission -->
         <mat-step>
           <ng-template matStepLabel>Submit</ng-template>
           

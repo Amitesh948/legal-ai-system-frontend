@@ -46,6 +46,10 @@
         <h3>Administration</h3>
       </div>
       <mat-nav-list class="sidenav-menu">
+        <a mat-list-item class="menu-item" [class.active]="selectedView === 'analytics'" (click)="selectedView = 'analytics'">
+          <mat-icon matListItemIcon>insights</mat-icon>
+          <span matListItemTitle>Analytics Overview</span>
+        </a>
         <a mat-list-item class="menu-item" [class.active]="selectedView === 'cases'" (click)="selectedView = 'cases'">
           <mat-icon matListItemIcon>cases</mat-icon>
           <span matListItemTitle>Case Management</span>
@@ -66,34 +70,72 @@
           <mat-icon matListItemIcon>history</mat-icon>
           <span matListItemTitle>Audit Logs</span>
         </a>
+        <mat-divider style="margin: 8px 0;"></mat-divider>
+        <a mat-list-item class="menu-item highlight-menu-item" (click)="openBroadcastDialog(broadcastDialog)">
+          <mat-icon matListItemIcon style="color: #ff9800;">campaign</mat-icon>
+          <span matListItemTitle style="color: #ff9800; font-weight: 500;">Send Broadcast</span>
+        </a>
       </mat-nav-list>
     </mat-sidenav>
 
     <mat-sidenav-content>
       <div class="admin-content">
         
-        <!-- Stats Row -->
-        <div class="stats-row" *ngIf="!isLoading">
-          <div class="stat-card glass-panel">
-            <div class="stat-icon blue-gradient"><mat-icon>fact_check</mat-icon></div>
-            <div class="stat-info">
-              <h3>{{ cases.length }}</h3>
-              <p>Total Cases in System</p>
+        <div *ngIf="selectedView === 'analytics'">
+          <!-- Stats Row -->
+          <div class="stats-row" *ngIf="!isLoading">
+            <div class="stat-card glass-panel">
+              <div class="stat-icon blue-gradient"><mat-icon>fact_check</mat-icon></div>
+              <div class="stat-info">
+                <h3>{{ cases.length }}</h3>
+                <p>Total Cases in System</p>
+              </div>
+            </div>
+            <div class="stat-card glass-panel">
+              <div class="stat-icon orange-gradient"><mat-icon>gavel</mat-icon></div>
+              <div class="stat-info">
+                <h3>{{ advocates.length }}</h3>
+                <p>Registered Advocates</p>
+              </div>
+            </div>
+            <div class="stat-card glass-panel">
+              <div class="stat-icon green-gradient"><mat-icon>account_balance_wallet</mat-icon></div>
+              <div class="stat-info">
+                <h3>{{ payments.length }}</h3>
+                <p>Total Transactions</p>
+              </div>
             </div>
           </div>
-          <div class="stat-card glass-panel">
-            <div class="stat-icon orange-gradient"><mat-icon>gavel</mat-icon></div>
-            <div class="stat-info">
-              <h3>{{ advocates.length }}</h3>
-              <p>Registered Advocates</p>
-            </div>
-          </div>
-          <div class="stat-card glass-panel">
-            <div class="stat-icon green-gradient"><mat-icon>account_balance_wallet</mat-icon></div>
-            <div class="stat-info">
-              <h3>{{ payments.length }}</h3>
-              <p>Total Transactions</p>
-            </div>
+
+          <!-- Admin Analytics Charts -->
+          <div *ngIf="hasChartData" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+            <!-- Case Status Breakdown -->
+            <mat-card class="glass-panel" style="padding: 24px;" *ngIf="caseStatusChartData?.labels?.length > 0">
+              <mat-card-header style="margin-bottom: 16px;">
+                <mat-card-title style="font-family: 'Playfair Display', serif; font-size: 20px;">Case Status Breakdown</mat-card-title>
+              </mat-card-header>
+              <mat-card-content style="height: 300px;">
+                <canvas baseChart
+                        [data]="caseStatusChartData"
+                        [options]="chartOptions"
+                        [type]="'doughnut'">
+                </canvas>
+              </mat-card-content>
+            </mat-card>
+
+            <!-- Top Advocates -->
+            <mat-card class="glass-panel" style="padding: 24px;" *ngIf="topAdvocatesChartData?.labels?.length > 0">
+              <mat-card-header style="margin-bottom: 16px;">
+                <mat-card-title style="font-family: 'Playfair Display', serif; font-size: 20px;">Top Rated Advocates</mat-card-title>
+              </mat-card-header>
+              <mat-card-content style="height: 300px;">
+                <canvas baseChart
+                        [data]="topAdvocatesChartData"
+                        [options]="chartOptions"
+                        [type]="'bar'">
+                </canvas>
+              </mat-card-content>
+            </mat-card>
           </div>
         </div>
 
@@ -117,9 +159,17 @@
               <h3 class="table-title" *ngIf="selectedView === 'audit'">System Audit Logs</h3>
               <p class="table-subtitle" *ngIf="selectedView === 'audit'">Review system security events, logins, and data modifications.</p>
             </div>
-            <button mat-stroked-button color="primary" (click)="loadData()" [disabled]="isLoading">
-              <mat-icon>refresh</mat-icon> Refresh Data
-            </button>
+            <div style="display: flex; gap: 12px;">
+              <button *ngIf="['cases', 'clients', 'advocates', 'payments'].includes(selectedView)" 
+                      mat-flat-button style="background: #4caf50; color: white;" 
+                      (click)="exportToCSV($any(selectedView))" 
+                      [disabled]="isLoading">
+                <mat-icon>download</mat-icon> Export CSV
+              </button>
+              <button mat-stroked-button color="primary" (click)="loadData()" [disabled]="isLoading">
+                <mat-icon>refresh</mat-icon> Refresh Data
+              </button>
+            </div>
           </div>
 
           <div *ngIf="isLoading" class="loading-state">
@@ -210,6 +260,9 @@
                   <ng-container matColumnDef="actions">
                     <th mat-header-cell *matHeaderCellDef class="text-right"> Action </th>
                     <td mat-cell *matCellDef="let element" class="text-right">
+                      <button mat-icon-button color="primary" matTooltip="View Chat History" (click)="viewChatAudit(element, chatAuditDialog)" style="margin-right: 8px;">
+                        <mat-icon>chat</mat-icon>
+                      </button>
                       <button mat-icon-button color="warn" matTooltip="Archive/Delete Case" (click)="deleteCase(element.id)" style="margin-right: 8px;">
                         <mat-icon>delete</mat-icon>
                       </button>
@@ -275,9 +328,22 @@
                   <ng-container matColumnDef="actions">
                     <th mat-header-cell *matHeaderCellDef class="text-right"> Action </th>
                     <td mat-cell *matCellDef="let element" class="text-right">
-                      <button mat-icon-button color="primary" matTooltip="View Details">
-                        <mat-icon>visibility</mat-icon>
+                      <button mat-icon-button color="primary" [matMenuTriggerFor]="actionMenu" matTooltip="User Actions">
+                        <mat-icon>more_vert</mat-icon>
                       </button>
+                      <mat-menu #actionMenu="matMenu">
+                        <button mat-menu-item>
+                          <mat-icon>visibility</mat-icon>
+                          <span>View Details</span>
+                        </button>
+                        <mat-divider></mat-divider>
+                        <button mat-menu-item (click)="toggleUserStatus(element.user_id, element.is_active)">
+                          <mat-icon [color]="element.is_active ? 'warn' : 'primary'">
+                            {{ element.is_active ? 'block' : 'check_circle' }}
+                          </mat-icon>
+                          <span>{{ element.is_active ? 'Suspend User' : 'Reactivate User' }}</span>
+                        </button>
+                      </mat-menu>
                     </td>
                   </ng-container>
 
@@ -351,11 +417,31 @@
                   <ng-container matColumnDef="actions">
                     <th mat-header-cell *matHeaderCellDef class="text-right"> Admin Action </th>
                     <td mat-cell *matCellDef="let element" class="text-right">
-                      <button mat-icon-button color="accent" matTooltip="View Full Profile" (click)="viewAdvocateDetails(element, advocateDetailsDialog)">
-                        <mat-icon>visibility</mat-icon>
+                      <button mat-icon-button color="primary" [matMenuTriggerFor]="advocateActionMenu" matTooltip="Admin Actions">
+                        <mat-icon>more_vert</mat-icon>
                       </button>
-                      <button mat-button color="primary" [disabled]="element.verification_status === 'approved'" (click)="verifyAdvocate(element.user_id, 'approved')">Approve</button>
-                      <button mat-button color="warn" [disabled]="element.verification_status === 'rejected'" (click)="verifyAdvocate(element.user_id, 'rejected')">Reject</button>
+                      <mat-menu #advocateActionMenu="matMenu">
+                        <button mat-menu-item (click)="viewAdvocateDetails(element, advocateDetailsDialog)">
+                          <mat-icon color="accent">visibility</mat-icon>
+                          <span>View Full Profile</span>
+                        </button>
+                        <mat-divider></mat-divider>
+                        <button mat-menu-item [disabled]="element.verification_status === 'approved'" (click)="verifyAdvocate(element.user_id, 'approved')">
+                          <mat-icon color="primary">verified</mat-icon>
+                          <span>Approve Onboarding</span>
+                        </button>
+                        <button mat-menu-item [disabled]="element.verification_status === 'rejected'" (click)="verifyAdvocate(element.user_id, 'rejected')">
+                          <mat-icon color="warn">cancel</mat-icon>
+                          <span>Reject Onboarding</span>
+                        </button>
+                        <mat-divider></mat-divider>
+                        <button mat-menu-item (click)="toggleUserStatus(element.user_id, element.is_active)">
+                          <mat-icon [color]="element.is_active ? 'warn' : 'primary'">
+                            {{ element.is_active ? 'block' : 'check_circle' }}
+                          </mat-icon>
+                          <span>{{ element.is_active ? 'Suspend Account' : 'Reactivate Account' }}</span>
+                        </button>
+                      </mat-menu>
                     </td>
                   </ng-container>
 
@@ -581,15 +667,157 @@
         </mat-list>
       </div>
 
+      <mat-divider></mat-divider>
+
+      <!-- Document Verification -->
+      <div class="profile-section" style="background: #f8fbfa; padding: 16px; border-radius: 8px; border: 1px solid #e0e0e0; margin-top: 16px;">
+        <h3 style="color: #2e7d32; display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+          <mat-icon>fact_check</mat-icon> Document Verification
+        </h3>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <!-- Bar Council Certificate -->
+          <div style="padding: 12px; background: white; border-radius: 6px; border: 1px solid #eeeeee;">
+            <div style="font-weight: 500; font-size: 13px; color: #757575; margin-bottom: 8px;">Enrollment Certificate</div>
+            <a *ngIf="selectedAdvocate.enrollment_certificate_path" [href]="getDocumentUrl(selectedAdvocate.enrollment_certificate_path)" target="_blank" style="display: flex; align-items: center; gap: 4px; text-decoration: none; color: #1976d2; font-weight: 500;">
+              <mat-icon>description</mat-icon> View Document
+            </a>
+            <span *ngIf="!selectedAdvocate.enrollment_certificate_path" style="color: #f44336; font-size: 13px;">
+              <mat-icon style="font-size: 16px; width: 16px; height: 16px; vertical-align: middle;">warning</mat-icon> Missing
+            </span>
+          </div>
+
+          <!-- Gov ID -->
+          <div style="padding: 12px; background: white; border-radius: 6px; border: 1px solid #eeeeee;">
+            <div style="font-weight: 500; font-size: 13px; color: #757575; margin-bottom: 8px;">Govt. Identity Card (Aadhaar/PAN)</div>
+            <a *ngIf="selectedAdvocate.gov_id_path || selectedAdvocate.pan_document_path" [href]="getDocumentUrl(selectedAdvocate.gov_id_path || selectedAdvocate.pan_document_path)" target="_blank" style="display: flex; align-items: center; gap: 4px; text-decoration: none; color: #1976d2; font-weight: 500;">
+              <mat-icon>badge</mat-icon> View Identity
+            </a>
+            <span *ngIf="!selectedAdvocate.gov_id_path && !selectedAdvocate.pan_document_path" style="color: #f44336; font-size: 13px;">
+              <mat-icon style="font-size: 16px; width: 16px; height: 16px; vertical-align: middle;">warning</mat-icon> Missing
+            </span>
+          </div>
+          
+          <!-- Degree Certificate -->
+          <div style="padding: 12px; background: white; border-radius: 6px; border: 1px solid #eeeeee;">
+            <div style="font-weight: 500; font-size: 13px; color: #757575; margin-bottom: 8px;">LLB Degree Certificate</div>
+            <a *ngIf="selectedAdvocate.degree_certificate_path" [href]="getDocumentUrl(selectedAdvocate.degree_certificate_path)" target="_blank" style="display: flex; align-items: center; gap: 4px; text-decoration: none; color: #1976d2; font-weight: 500;">
+              <mat-icon>school</mat-icon> View Degree
+            </a>
+            <span *ngIf="!selectedAdvocate.degree_certificate_path" style="color: #f44336; font-size: 13px;">
+              <mat-icon style="font-size: 16px; width: 16px; height: 16px; vertical-align: middle;">warning</mat-icon> Missing
+            </span>
+          </div>
+          
+          <!-- COP -->
+          <div style="padding: 12px; background: white; border-radius: 6px; border: 1px solid #eeeeee;">
+            <div style="font-weight: 500; font-size: 13px; color: #757575; margin-bottom: 8px;">Certificate of Practice (AIBE)</div>
+            <a *ngIf="selectedAdvocate.certificate_of_practice_path" [href]="getDocumentUrl(selectedAdvocate.certificate_of_practice_path)" target="_blank" style="display: flex; align-items: center; gap: 4px; text-decoration: none; color: #1976d2; font-weight: 500;">
+              <mat-icon>verified</mat-icon> View COP
+            </a>
+            <span *ngIf="!selectedAdvocate.certificate_of_practice_path" style="color: #757575; font-size: 13px;">
+              Not Provided
+            </span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Close</button>
-    <button mat-flat-button color="primary" 
+  <mat-dialog-actions align="end" style="padding: 16px;">
+    <button mat-button mat-dialog-close>Cancel</button>
+    
+    <button mat-flat-button color="warn" 
+            [disabled]="selectedAdvocate?.verification_status === 'rejected'" 
+            (click)="verifyAdvocate(selectedAdvocate.user_id, 'rejected')" 
+            mat-dialog-close>
+      <mat-icon>cancel</mat-icon> Reject Application
+    </button>
+    
+    <button mat-flat-button class="btn-premium" style="margin-left: 12px; background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); color: white;"
             [disabled]="selectedAdvocate?.verification_status === 'approved'" 
             (click)="verifyAdvocate(selectedAdvocate.user_id, 'approved')" 
             mat-dialog-close>
-      Approve Advocate
+      <mat-icon>verified</mat-icon> Approve Advocate
     </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<!-- Broadcast Dialog Template -->
+<ng-template #broadcastDialog>
+  <h2 mat-dialog-title style="color: #ff9800; display: flex; align-items: center; gap: 8px;">
+    <mat-icon>campaign</mat-icon> Send Global Broadcast
+  </h2>
+  <mat-dialog-content>
+    <p style="margin-bottom: 24px; color: #616161;">This message will appear instantly as a pop-up to all users currently online.</p>
+    
+    <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 16px;">
+      <mat-label>Announcement Title</mat-label>
+      <input matInput [(ngModel)]="broadcastTitle" placeholder="e.g. Scheduled Maintenance">
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 16px;">
+      <mat-label>Message Type</mat-label>
+      <mat-select [(ngModel)]="broadcastType">
+        <mat-option value="info"><mat-icon style="color: #2196f3;">info</mat-icon> Information</mat-option>
+        <mat-option value="warning"><mat-icon style="color: #ff9800;">warning</mat-icon> Warning</mat-option>
+        <mat-option value="success"><mat-icon style="color: #4caf50;">check_circle</mat-icon> Success / Feature Release</mat-option>
+      </mat-select>
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Message Content</mat-label>
+      <textarea matInput [(ngModel)]="broadcastMessage" rows="4" placeholder="Enter your announcement here..."></textarea>
+    </mat-form-field>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions align="end" style="padding: 16px;">
+    <button mat-button mat-dialog-close [disabled]="isBroadcasting">Cancel</button>
+    <button mat-flat-button style="background: #ff9800; color: white;" 
+            [disabled]="isBroadcasting || !broadcastMessage.trim()" 
+            (click)="sendGlobalBroadcast()"
+            mat-dialog-close>
+      <span *ngIf="!isBroadcasting">Send Broadcast</span>
+      <mat-spinner *ngIf="isBroadcasting" diameter="20"></mat-spinner>
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<!-- Chat Audit Dialog Template -->
+<ng-template #chatAuditDialog>
+  <h2 mat-dialog-title style="color: #1976d2; display: flex; align-items: center; gap: 8px;">
+    <mat-icon>security</mat-icon> Chat History Audit: {{auditCaseTitle}}
+  </h2>
+  <mat-dialog-content class="chat-audit-content">
+    
+    <div *ngIf="isAuditLoading" style="display: flex; justify-content: center; padding: 40px;">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+    
+    <div *ngIf="!isAuditLoading && auditMessages.length === 0" style="text-align: center; padding: 40px; color: #757575;">
+      <mat-icon style="font-size: 48px; width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.5;">speaker_notes_off</mat-icon>
+      <p>No chat history exists for this case yet.</p>
+    </div>
+
+    <div *ngIf="!isAuditLoading && auditMessages.length > 0" class="audit-messages-container" style="background: #f5f7fa; padding: 16px; border-radius: 8px; max-height: 60vh; overflow-y: auto;">
+      <div *ngFor="let msg of auditMessages" style="margin-bottom: 16px; display: flex; flex-direction: column;">
+        
+        <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px; color: #757575;">
+          <strong [style.color]="msg.sender_role === 'advocate' ? '#1976d2' : msg.sender_role === 'client' ? '#388e3c' : '#ff9800'">
+            {{msg.sender_name}} ({{msg.sender_role | uppercase}})
+          </strong>
+          <span>{{msg.created_at | date:'short'}}</span>
+        </div>
+        
+        <div style="background: white; padding: 12px; border-radius: 8px; border: 1px solid #e0e0e0; font-size: 14px; line-height: 1.5; color: #333;">
+          {{msg.message_text}}
+        </div>
+        
+      </div>
+    </div>
+
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" style="padding: 16px;">
+    <button mat-button mat-dialog-close>Close Audit</button>
   </mat-dialog-actions>
 </ng-template>

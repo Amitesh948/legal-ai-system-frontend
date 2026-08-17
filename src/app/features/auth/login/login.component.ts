@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -31,7 +31,7 @@ import { AdvocateService } from '../../../core/services/advocate/advocate.servic
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private advocateService = inject(AdvocateService);
@@ -45,6 +45,16 @@ export class LoginComponent {
   hidePassword = true;
   isLoading = false;
   errorMessage = '';
+
+  ngOnInit() {
+    // Check if user was redirected here due to suspension
+    import('@angular/router').then(m => {
+      const url = new URL(window.location.href);
+      if (url.searchParams.get('suspended') === 'true') {
+        this.errorMessage = 'Your account has been suspended by an administrator. Please contact support.';
+      }
+    });
+  }
 
   onSubmit() {
     if (this.loginForm.invalid) return;

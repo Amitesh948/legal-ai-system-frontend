@@ -102,6 +102,58 @@
       <!-- TABS for content instead of stacking vertically -->
       <mat-tab-group dynamicHeight animationDuration="300ms" class="premium-tabs" style="margin-top: 24px;">
         
+        <!-- NEW TAB: Documents & Evidence -->
+        <mat-tab label="Documents & Evidence">
+          <div class="tab-content-wrapper">
+            <mat-card class="premium-card" style="margin: 0; box-shadow: none; border: none;">
+              <div class="documents-header" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 16px 0 16px; flex-wrap: wrap; gap: 16px;">
+                <div style="display: flex; align-items: center;">
+                  <mat-icon style="margin-right: 16px; color: #1976d2; font-size: 28px; width: 28px; height: 28px;">folder</mat-icon>
+                  <div>
+                    <h3 style="margin: 0; font-size: 1.25rem; font-weight: 500; color: #1e293b;">Case Documents</h3>
+                    <p style="margin: 4px 0 0; font-size: 0.875rem; color: #64748b;">All uploaded evidence, contracts, and references</p>
+                  </div>
+                </div>
+                
+                <div class="upload-action" *ngIf="caseData?.status !== 'completed' && caseData?.status !== 'cancelled'">
+                  <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)">
+                  <button mat-raised-button color="primary" (click)="fileInput.click()" [disabled]="isUploadingDoc" style="white-space: normal; height: auto; padding: 8px 16px;">
+                    <div style="display: flex; align-items: center;">
+                      <mat-icon *ngIf="!isUploadingDoc">upload_file</mat-icon>
+                      <mat-spinner *ngIf="isUploadingDoc" diameter="20" style="margin-right: 8px; display: inline-block;"></mat-spinner>
+                      <span style="margin-left: 8px;">{{ isUploadingDoc ? 'Uploading...' : 'Upload Document' }}</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+              
+              <mat-card-content style="margin-top: 24px;">
+                <div *ngIf="!caseData?.documents?.length" class="no-messages" style="text-align: center; padding: 40px; background: #f8fafc; border-radius: 8px;">
+                  <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #94a3b8; margin-bottom: 16px;">folder_off</mat-icon>
+                  <p style="color: #64748b; margin: 0;">No documents have been uploaded for this case yet.</p>
+                </div>
+                
+                <div class="documents-grid" *ngIf="caseData?.documents?.length" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+                  <mat-card *ngFor="let doc of caseData.documents" class="document-item-card" style="border: 1px solid #e2e8f0; box-shadow: none;">
+                    <mat-card-content style="display: flex; align-items: center; padding: 16px;">
+                      <mat-icon style="font-size: 32px; width: 32px; height: 32px; color: #ef4444; margin-right: 16px;">
+                        {{ doc.mime_type?.includes('pdf') ? 'picture_as_pdf' : (doc.mime_type?.includes('image') ? 'image' : 'insert_drive_file') }}
+                      </mat-icon>
+                      <div style="flex: 1; overflow: hidden;">
+                        <h4 style="margin: 0; font-size: 0.95rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" [title]="doc.file_name">{{ doc.file_name }}</h4>
+                        <p style="margin: 4px 0 0; font-size: 0.8rem; color: #64748b;">{{ (doc.file_size / 1024 / 1024) | number:'1.2-2' }} MB</p>
+                      </div>
+                      <button mat-icon-button color="primary" (click)="downloadDocument(doc.id)" matTooltip="Download">
+                        <mat-icon>download</mat-icon>
+                      </button>
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </mat-tab>
+        
         <!-- TAB 1: AI Analysis -->
         <mat-tab label="AI Analysis">
           <div class="tab-content-wrapper">
@@ -268,6 +320,13 @@
                         (click)="downloadReport()">
                   <mat-icon>download</mat-icon>
                   Download Final Report
+                </button>
+
+                <button mat-raised-button color="warn" 
+                        *ngIf="userRole === 'client' && caseData.status === 'report_generated'"
+                        (click)="openRatingDialog()" style="margin-left: 8px;">
+                  <mat-icon>check_circle</mat-icon>
+                  Mark Case as Completed
                 </button>
               </mat-card-actions>
             </mat-card>

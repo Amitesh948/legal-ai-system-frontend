@@ -26,10 +26,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CaseService } from '../../../core/services/case/case.service';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { AdvocateService } from '../../../core/services/advocate/advocate.service';
+import { environment } from '../../../../environments/environment';
 
 import { AuditLogService, AuditLog } from '../../../core/services/audit-log/audit-log.service';
 import { AdminService } from '../../../core/services/admin/admin.service';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -55,7 +57,8 @@ import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialo
     MatBadgeModule,
     MatMenuModule,
     MatInputModule,
-    MatTooltipModule
+    MatTooltipModule,
+    BaseChartDirective
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css'],
@@ -81,6 +84,13 @@ export class AdminDashboardComponent implements OnInit {
   unreadNotifications = 0;
   recentNotifications: any[] = [];
 
+  // Chart.js Data
+  chartOptions = { responsive: true, maintainAspectRatio: false };
+  caseStatusChartData: any = { labels: [], datasets: [{ data: [] }] };
+  topAdvocatesChartData: any = { labels: [], datasets: [{ data: [] }] };
+  hasChartData = false;
+  adminStats: any = null;
+
   // Filtering
   searchQuery = '';
   statusFilter = 'all';
@@ -98,7 +108,12 @@ export class AdminDashboardComponent implements OnInit {
   isAssigning = false;
   
   selectedAdvocate: any = null;
-  selectedView: string = 'cases';
+  selectedView: string = 'analytics';
+  
+  // Chat Audit
+  auditCaseTitle: string = '';
+  auditMessages: any[] = [];
+  isAuditLoading: boolean = false;
 
   displayedColumns: string[] = ['case_id', 'title', 'status', 'created_at', 'assignment', 'actions'];
   advocateColumns: string[] = ['name', 'bar_council_id', 'state', 'verification_status', 'actions'];
@@ -108,6 +123,60 @@ export class AdminDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
+    this.loadAdminAnalytics();
+  }
+
+  viewChatAudit(caseObj: any, template: TemplateRef<any>) {
+    this.auditCaseTitle = caseObj.title;
+    this.isAuditLoading = true;
+    this.auditMessages = [];
+    
+    this.dialog.open(template, {
+      width: '700px',
+      maxHeight: '90vh',
+      panelClass: 'chat-audit-dialog'
+    });
+
+    this.caseService.getCaseMessages(caseObj.id).subscribe({
+      next: (res) => {
+        this.auditMessages = res.data || [];
+        this.isAuditLoading = false;
+      },
+      error: (err) => {
+        this.snackBar.open('Failed to load chat history', 'Close', { duration: 3000 });
+        this.isAuditLoading = false;
+      }
+    });
+  }
+
+  loadAdminAnalytics() {
+    this.adminService.getStats().subscribe(res => { this.adminStats = res.data; });
+    this.caseService.getAdminAnalytics().subscribe({
+      next: (res) => {
+        const data = res.data;
+        if (data.case_status) {
+          this.caseStatusChartData = {
+            labels: Object.keys(data.case_status).map(k => k.replace('_', ' ').toUpperCase()),
+            datasets: [{
+              data: Object.values(data.case_status),
+              backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#6366f1', '#8b5cf6']
+            }]
+          };
+        }
+        if (data.top_advocates && data.top_advocates.length > 0) {
+          this.topAdvocatesChartData = {
+            labels: data.top_advocates.map((a: any) => a.name),
+            datasets: [{
+              label: 'Average Rating',
+              data: data.top_advocates.map((a: any) => a.rating),
+              backgroundColor: '#3b82f6'
+            }]
+          };
+        }
+        this.hasChartData = true;
+      },
+      error: (err) => console.error(err)
+    });
   }
 
   viewAdvocateDetails(advocate: any, template: TemplateRef<any>) {
@@ -120,6 +189,23 @@ export class AdminDashboardComponent implements OnInit {
 
   clearNotifications() {
     this.unreadNotifications = 0;
+  }
+
+  toggleUserStatus(userId: string, currentStatus: boolean) {
+    const newStatus = !currentStatus;
+    const action = newStatus ? 'reactivate' : 'suspend';
+    
+    if (confirm(`Are you sure you want to ${action} this user?`)) {
+      this.adminService.updateUserStatus(userId, newStatus).subscribe({
+        next: (res) => {
+          this.snackBar.open(res.message, 'Close', { duration: 3000 });
+          this.loadData(); // Refresh the tables
+        },
+        error: (err) => {
+          this.snackBar.open(err.error?.detail || 'Failed to update user status', 'Close', { duration: 3000 });
+        }
+      });
+    }
   }
 
   loadData() {
@@ -278,5 +364,122 @@ export class AdminDashboardComponent implements OnInit {
            this.snackBar.open('Failed to update advocate status', 'Close', { duration: 3000 });
         }
      });
+  }
+
+  getDocumentUrl(path: string | null): string | null {
+    if (!path) return null;
+    if (path.startsWith('http')) return path;
+    // Extract base URL from API URL (e.g., http://localhost:8000/api/v1 -> http://localhost:8000)
+    const baseUrl = environment.apiUrl.split('/api/')[0];
+    return `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
+  }
+
+  exportToCSV(dataType: 'cases' | 'clients' | 'advocates' | 'payments') {
+    let data: any[] = [];
+    let headers: string[] = [];
+    let filename = `${dataType}_export_${new Date().toISOString().split('T')[0]}.csv`;
+
+    switch(dataType) {
+      case 'cases':
+        data = this.cases.map(c => ({
+          ID: c.id,
+          Title: c.title,
+          Status: c.status,
+          Created_Date: new Date(c.created_at).toLocaleDateString(),
+          Advocate_Assigned: c.advocate_id ? 'Yes' : 'No'
+        }));
+        headers = ['ID', 'Title', 'Status', 'Created_Date', 'Advocate_Assigned'];
+        break;
+      case 'clients':
+        data = this.clients.map(c => ({
+          Name: c.name,
+          Email: c.email,
+          Active_Cases: c.case_count,
+          Joined_Date: new Date(c.joined_at).toLocaleDateString()
+        }));
+        headers = ['Name', 'Email', 'Active_Cases', 'Joined_Date'];
+        break;
+      case 'advocates':
+        data = this.advocateProfiles.map(a => ({
+          Name: `${a.first_name} ${a.last_name}`,
+          Email: a.email,
+          Bar_Council_ID: a.bar_council_id || 'N/A',
+          Location: `${a.district || ''}, ${a.state || ''}`,
+          Status: a.verification_status
+        }));
+        headers = ['Name', 'Email', 'Bar_Council_ID', 'Location', 'Status'];
+        break;
+      case 'payments':
+        data = this.payments.map(p => ({
+          Transaction_ID: p.transaction_id || p.order_id,
+          Client_Name: p.client_name,
+          Case_Title: p.case_title,
+          Amount: p.amount,
+          Currency: p.currency,
+          Status: p.status,
+          Date: new Date(p.date).toLocaleDateString()
+        }));
+        headers = ['Transaction_ID', 'Client_Name', 'Case_Title', 'Amount', 'Currency', 'Status', 'Date'];
+        break;
+    }
+
+    if (data.length === 0) {
+      this.snackBar.open(`No ${dataType} data available to export.`, 'Close', { duration: 3000 });
+      return;
+    }
+
+    const csvRows = [];
+    csvRows.push(headers.join(','));
+
+    for (const row of data) {
+      const values = headers.map(header => {
+        const val = row[header] === null || row[header] === undefined ? '' : String(row[header]);
+        // Escape quotes and wrap in quotes if contains comma
+        return `"${val.replace(/"/g, '""')}"`;
+      });
+      csvRows.push(values.join(','));
+    }
+
+    const csvString = csvRows.join('\n');
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    this.snackBar.open(`${dataType} data exported successfully!`, 'Close', { duration: 3000 });
+  }
+
+  broadcastTitle: string = 'System Announcement';
+  broadcastMessage: string = '';
+  broadcastType: string = 'info';
+  isBroadcasting: boolean = false;
+
+  openBroadcastDialog(template: TemplateRef<any>) {
+    this.broadcastTitle = 'System Announcement';
+    this.broadcastMessage = '';
+    this.broadcastType = 'info';
+    this.dialog.open(template, { width: '450px' });
+  }
+
+  sendGlobalBroadcast() {
+    if (!this.broadcastMessage.trim()) return;
+    
+    this.isBroadcasting = true;
+    this.adminService.sendBroadcast(this.broadcastMessage, this.broadcastType, this.broadcastTitle).subscribe({
+      next: () => {
+        this.snackBar.open('Global broadcast sent successfully!', 'Close', { duration: 3000 });
+        this.isBroadcasting = false;
+      },
+      error: () => {
+        this.snackBar.open('Failed to send broadcast.', 'Close', { duration: 3000 });
+        this.isBroadcasting = false;
+      }
+    });
   }
 }

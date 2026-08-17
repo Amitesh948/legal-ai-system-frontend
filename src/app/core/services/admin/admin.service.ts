@@ -32,4 +32,12 @@ export class AdminService {
   getPayments(): Observable<any> {
     return this.http.get(`${this.apiUrl}/payments`);
   }
+
+  sendBroadcast(message: string, type: string = 'info', title: string = 'System Announcement'): Observable<any> {
+    return this.http.post(`${this.apiUrl}/broadcast`, { message, type, title });
+  }
+
+  updateUserStatus(userId: string, isActive: boolean): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/users/${userId}/status`, { is_active: isActive });
+  }
 }

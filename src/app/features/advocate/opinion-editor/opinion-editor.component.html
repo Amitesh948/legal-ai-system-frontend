@@ -6,57 +6,109 @@
     <h2>Legal Opinion & Review (Case ID: {{ caseId }})</h2>
   </div>
 
-  <mat-card>
-    <mat-card-content>
-      <form [formGroup]="opinionForm" class="opinion-form">
-        
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Advocate's Legal Opinion</mat-label>
-          <textarea matInput formControlName="legal_opinion" rows="6" placeholder="Provide detailed legal analysis..."></textarea>
-          <mat-error *ngIf="opinionForm.get('legal_opinion')?.hasError('required')">
-            Legal Opinion is required.
-          </mat-error>
-        </mat-form-field>
+<div class="opinion-editor-container">
+  <div class="header">
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h2>Legal Opinion & Review (Case ID: {{ caseId }})</h2>
+  </div>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Risk Assessment</mat-label>
-          <textarea matInput formControlName="risk_assessment" rows="4" placeholder="Identify potential legal risks..."></textarea>
-          <mat-error *ngIf="opinionForm.get('risk_assessment')?.hasError('required')">
-            Risk Assessment is required.
-          </mat-error>
-        </mat-form-field>
+  <div style="display: flex; gap: 24px; align-items: flex-start; height: calc(100vh - 150px);">
+    
+    <!-- Left Column: Editor Form -->
+    <mat-card style="flex: 1; overflow-y: auto; height: 100%;">
+      <mat-card-content>
+        <form [formGroup]="opinionForm" class="opinion-form">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Advocate's Legal Opinion</mat-label>
+            <textarea matInput formControlName="legal_opinion" rows="10" placeholder="Provide detailed legal analysis..."></textarea>
+            <mat-error *ngIf="opinionForm.get('legal_opinion')?.hasError('required')">
+              Legal Opinion is required.
+            </mat-error>
+          </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Recommended Actions</mat-label>
-          <textarea matInput formControlName="recommended_actions" rows="4" placeholder="What should the client do next?"></textarea>
-          <mat-error *ngIf="opinionForm.get('recommended_actions')?.hasError('required')">
-            Recommended Actions are required.
-          </mat-error>
-        </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Risk Assessment</mat-label>
+            <textarea matInput formControlName="risk_assessment" rows="4" placeholder="Identify potential legal risks..."></textarea>
+          </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Winning Probability (%)</mat-label>
-          <input matInput type="number" formControlName="winning_probability" min="0" max="100">
-          <mat-error *ngIf="opinionForm.get('winning_probability')?.hasError('min') || opinionForm.get('winning_probability')?.hasError('max')">
-            Must be between 0 and 100.
-          </mat-error>
-        </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Recommended Actions</mat-label>
+            <textarea matInput formControlName="recommended_actions" rows="4" placeholder="What should the client do next?"></textarea>
+          </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>AI Summary (Edited)</mat-label>
-          <textarea matInput formControlName="ai_summary_edited" rows="4" placeholder="Optionally provide an edited version of the AI summary..."></textarea>
-        </mat-form-field>
+          <div style="display: flex; gap: 16px;">
+            <mat-form-field appearance="outline" style="flex: 1;">
+              <mat-label>Winning Probability (%)</mat-label>
+              <input matInput type="number" formControlName="winning_probability" min="0" max="100">
+            </mat-form-field>
+          </div>
 
-        <div class="form-actions">
-          <button mat-stroked-button color="primary" type="button" (click)="saveOpinion('draft')" [disabled]="isLoading">
-            Save as Draft
-          </button>
-          <button mat-raised-button color="accent" type="button" (click)="saveOpinion('finalized')" [disabled]="opinionForm.invalid || isLoading">
-            Finalize Opinion
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>AI Summary (Edited)</mat-label>
+            <textarea matInput formControlName="ai_summary_edited" rows="4" placeholder="Optionally provide an edited version of the AI summary..."></textarea>
+          </mat-form-field>
+
+          <div class="form-actions" style="margin-top: 16px; display: flex; gap: 16px;">
+            <button mat-stroked-button color="primary" type="button" (click)="saveOpinion('draft')" [disabled]="isLoading">
+              Save as Draft
+            </button>
+            <button mat-raised-button color="accent" type="button" (click)="saveOpinion('finalized')" [disabled]="opinionForm.invalid || isLoading">
+              Finalize Opinion
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Right Column: Citation Search -->
+    <mat-card style="width: 380px; height: 100%; display: flex; flex-direction: column;">
+      <mat-card-header style="background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 16px; margin-bottom: 16px;">
+        <mat-card-title style="font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+          <mat-icon color="primary">menu_book</mat-icon> Citation Library
+        </mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content style="flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0 16px 16px;">
+        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+          <mat-form-field appearance="outline" style="flex: 1; margin-bottom: -1.25em;">
+            <mat-label>Search Case Law / Sections</mat-label>
+            <input matInput [(ngModel)]="searchQuery" (keyup.enter)="searchCitations()" placeholder="e.g. IPC 420">
+          </mat-form-field>
+          <button mat-mini-fab color="primary" (click)="searchCitations()" [disabled]="isSearching" style="margin-top: 4px;">
+            <mat-icon>search</mat-icon>
           </button>
         </div>
 
-      </form>
-    </mat-card-content>
-  </mat-card>
+        <div *ngIf="isSearching" style="display: flex; justify-content: center; padding: 32px;">
+          <mat-spinner diameter="30"></mat-spinner>
+        </div>
+
+        <div *ngIf="!isSearching && searchResults.length === 0 && searchQuery" style="text-align: center; padding: 24px; color: #64748b;">
+          No citations found matching your query.
+        </div>
+
+        <div *ngIf="!isSearching && searchResults.length > 0" style="overflow-y: auto; flex: 1; padding-right: 4px; display: flex; flex-direction: column; gap: 12px;">
+          <mat-card *ngFor="let cit of searchResults" style="background: #f8fafc; box-shadow: none; border: 1px solid #e2e8f0;">
+            <mat-card-content style="padding: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                <h4 style="margin: 0; font-size: 0.95rem; font-weight: 500; color: #0f172a;">{{ cit.title }}</h4>
+                <button mat-icon-button color="accent" (click)="insertCitation(cit)" matTooltip="Insert into Opinion" style="width: 32px; height: 32px; padding: 4px; margin: -8px -8px 0 0;">
+                  <mat-icon style="font-size: 20px; width: 20px; height: 20px;">add_circle</mat-icon>
+                </button>
+              </div>
+              <p style="margin: 0; font-size: 0.8rem; color: #64748b;">
+                <strong>{{ cit.citation_type | uppercase }}</strong> | {{ cit.court_name }}
+              </p>
+              <p style="margin: 8px 0 0; font-size: 0.8rem; color: #334155; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                {{ cit.judgment_text || cit.notes }}
+              </p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
 </div>

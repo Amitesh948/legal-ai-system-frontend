@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 // Angular Material
@@ -13,12 +13,16 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
 
 import { CaseService } from '../../../core/services/case/case.service';
+import { CitationService } from '../../../core/services/citation/citation.service';
+import { Citation } from '../../../core/models/citation.model';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-opinion-editor',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
@@ -26,7 +30,8 @@ import { CaseService } from '../../../core/services/case/case.service';
     MatButtonModule,
     MatSelectModule,
     MatSnackBarModule,
-    MatIconModule
+    MatIconModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './opinion-editor.component.html',
   styleUrls: ['./opinion-editor.component.css']
@@ -36,11 +41,17 @@ export class OpinionEditorComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private caseService = inject(CaseService);
+  private citationService = inject(CitationService);
   private snackBar = inject(MatSnackBar);
 
   caseId: string | null = null;
   opinionForm!: FormGroup;
   isLoading = false;
+
+  // Citation Search
+  searchQuery = '';
+  searchResults: Citation[] = [];
+  isSearching = false;
 
   ngOnInit(): void {
     this.caseId = this.route.snapshot.paramMap.get('id');
@@ -106,5 +117,35 @@ export class OpinionEditorComponent implements OnInit {
 
   goBack() {
     this.router.navigate(['/dashboard']);
+  }
+
+  // Citation Methods
+  searchCitations() {
+    if (!this.searchQuery.trim()) {
+      this.searchResults = [];
+      return;
+    }
+    this.isSearching = true;
+    this.citationService.searchCitations(this.searchQuery, '', 0, 10).subscribe({
+      next: (res) => {
+        this.searchResults = res.data || [];
+        this.isSearching = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.isSearching = false;
+      }
+    });
+  }
+
+  insertCitation(citation: Citation) {
+    const currentOpinion = this.opinionForm.get('legal_opinion')?.value || '';
+    const insertText = `[Citation: ${citation.title} - ${citation.court_name || ''} (${citation.judgment_date || ''})]\n${citation.judgment_text || ''}\n`;
+    
+    this.opinionForm.patchValue({
+      legal_opinion: currentOpinion + (currentOpinion ? '\n\n' : '') + insertText
+    });
+    
+    this.snackBar.open('Citation inserted!', 'Close', { duration: 2000 });
   }
 }

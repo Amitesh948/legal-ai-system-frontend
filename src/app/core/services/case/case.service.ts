@@ -44,6 +44,16 @@ export class CaseService {
     return this.http.post(`${this.apiUrl}/cases/${caseId}/opinion`, data);
   }
 
+  /** Close case and provide rating */
+  closeCase(caseId: string, rating: number, review: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/cases/${caseId}/close`, { rating, review });
+  }
+
+  /** Admin: Get Analytics */
+  getAdminAnalytics(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/cases/admin/analytics`);
+  }
+
   /** Admin: Get all cases */
   getAllCasesAdmin(): Observable<any> {
     return this.http.get(`${this.apiUrl}/cases/admin/all`);

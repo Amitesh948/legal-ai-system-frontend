@@ -18,6 +18,7 @@ import { AdvocateService } from '../../../core/services/advocate/advocate.servic
 import { AdminService } from '../../../core/services/admin/admin.service';
 import { CreateCaseDialogComponent } from '../create-case-dialog/create-case-dialog.component';
 import { NotificationDropdownComponent } from '../../../core/components/notification-dropdown/notification-dropdown.component';
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,7 +34,8 @@ import { NotificationDropdownComponent } from '../../../core/components/notifica
     MatDividerModule,
     MatProgressSpinnerModule,
     MatDialogModule,
-    NotificationDropdownComponent
+    NotificationDropdownComponent,
+    BaseChartDirective
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
@@ -59,6 +61,12 @@ export class DashboardComponent implements OnInit {
   // Admin stats
   adminStats: any = null;
   recentActivity: any[] = [];
+  
+  // Chart.js Data
+  chartOptions = { responsive: true, maintainAspectRatio: false };
+  caseStatusChartData: any = { labels: [], datasets: [{ data: [] }] };
+  topAdvocatesChartData: any = { labels: [], datasets: [{ data: [] }] };
+  hasChartData = false;
 
   ngOnInit() {
     this.authService.me().subscribe({
@@ -70,14 +78,12 @@ export class DashboardComponent implements OnInit {
       error: (err) => console.error('Failed to load user profile', err)
     });
 
-    // Decode JWT for role
     try {
       const token = localStorage.getItem('access_token');
       if (token) {
         const payload = JSON.parse(atob(token.split('.')[1]));
         this.userRole = payload.role;
         
-        // Guard: redirect unverified advocates to onboarding
         if (this.userRole === 'advocate') {
           this.advocateService.getProfile().subscribe({
             next: (res: any) => {
@@ -95,6 +101,7 @@ export class DashboardComponent implements OnInit {
     if (this.userRole === 'admin') {
       this.loadAdminStats();
       this.loadAdminActivity();
+      this.loadAdminAnalytics();
     } else {
       this.loadCases();
     }
@@ -104,12 +111,44 @@ export class DashboardComponent implements OnInit {
     this.adminService.getStats().subscribe({
       next: (res) => {
         this.adminStats = res.data;
-        this.isLoadingCases = false; // We can share this loading flag for now
+        this.isLoadingCases = false; 
       },
       error: (err) => {
         console.error('Failed to load admin stats', err);
         this.isLoadingCases = false;
       }
+    });
+  }
+
+  loadAdminAnalytics() {
+    this.caseService.getAdminAnalytics().subscribe({
+      next: (res) => {
+        const data = res.data;
+        
+        if (data.case_status) {
+          this.caseStatusChartData = {
+            labels: Object.keys(data.case_status).map(k => k.replace('_', ' ').toUpperCase()),
+            datasets: [{
+              data: Object.values(data.case_status),
+              backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#6366f1', '#8b5cf6']
+            }]
+          };
+        }
+        
+        if (data.top_advocates && data.top_advocates.length > 0) {
+          this.topAdvocatesChartData = {
+            labels: data.top_advocates.map((a: any) => a.name),
+            datasets: [{
+              label: 'Average Rating',
+              data: data.top_advocates.map((a: any) => a.rating),
+              backgroundColor: '#3b82f6'
+            }]
+          };
+        }
+        
+        this.hasChartData = true;
+      },
+      error: (err) => console.error(err)
     });
   }
 
@@ -130,7 +169,6 @@ export class DashboardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Reload cases if a new case was created successfully
         this.isLoadingCases = true;
         this.loadCases();
       }

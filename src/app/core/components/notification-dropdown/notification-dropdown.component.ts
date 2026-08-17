@@ -10,6 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NotificationService, AppNotification } from '../../services/notification/notification.service';
 import { Observable } from 'rxjs';
 import { DatePipe } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-notification-dropdown',
@@ -35,15 +36,38 @@ export class NotificationDropdownComponent implements OnInit {
 
   constructor(
     private notificationService: NotificationService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
     this.notifications$ = this.notificationService.notifications$;
     this.unreadCount$ = this.notificationService.unreadCount$;
   }
 
   ngOnInit() {
-    // Initial fetch of just the badge count
+    // Initial fetch of the badge count
     this.notificationService.loadUnreadCount().subscribe();
+    
+    // Auto-fetch notifications to trigger popups for unread broadcasts when logging in
+    this.notificationService.loadNotifications().subscribe({
+      next: (res) => {
+        // Find unread system broadcasts that were missed
+        const currentNotifications = res?.data || [];
+        const unreadBroadcasts = currentNotifications.filter((n: AppNotification) => !n.is_read && n.type === 'system_broadcast');
+        
+        if (unreadBroadcasts.length > 0) {
+          // Show the most recent one as a popup
+          const latest = unreadBroadcasts[0];
+          this.snackBar.open(`📢 Missed Broadcast: ${latest.title} - ${latest.message}`, 'Mark Read', {
+            duration: 10000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['broadcast-snackbar', 'info-snackbar']
+          }).onAction().subscribe(() => {
+            this.notificationService.markAsRead(latest.id).subscribe();
+          });
+        }
+      }
+    });
   }
 
   onMenuOpened() {

@@ -208,5 +208,32 @@ html.dark h1, html.dark h2, html.dark h3, html.dark h4, html.dark h5, html.dark 
 
 /* Ensure dialog backdrop does not block select interactions */
 .cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
-  pointer-events: auto;
+}
+
+/* --- Broadcast Snackbars --- */
+.broadcast-snackbar {
+}
+.broadcast-snackbar .mdc-snackbar__surface {
+  border-radius: 8px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
+}
+.info-snackbar .mdc-snackbar__surface {
+  background-color: #2196f3 !important;
+  color: white !important;
+}
+.warning-snackbar .mdc-snackbar__surface {
+  background-color: #ff9800 !important;
+  color: white !important;
+}
+.success-snackbar .mdc-snackbar__surface {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+.broadcast-snackbar .mdc-snackbar__label {
+  font-size: 16px !important;
+  font-weight: 500 !important;
+}
+.broadcast-snackbar .mdc-button {
+  color: #fff !important;
+  font-weight: 600 !important;
 }

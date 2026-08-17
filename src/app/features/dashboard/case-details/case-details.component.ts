@@ -18,7 +18,9 @@ import { CaseService } from '../../../core/services/case/case.service';
 import { PaymentService } from '../../../core/services/payment/payment.service';
 import { ChatWebSocketService } from '../../../core/services/chat/chat-websocket.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { environment } from '../../../../environments/environment';
+import { RatingDialogComponent } from './rating-dialog/rating-dialog.component';
 
 declare var Razorpay: any;
 
@@ -28,6 +30,7 @@ declare var Razorpay: any;
   imports: [
     CommonModule,
     RouterModule,
+    MatDialogModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -66,6 +69,29 @@ export class CaseDetailsComponent implements OnInit, OnDestroy {
   private wsSubscription: any;
   isTyping = false;
   private typingTimeout: any;
+
+  isUploadingDoc = false;
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file && this.caseId) {
+      this.isUploadingDoc = true;
+      this.caseService.uploadDocument(this.caseId, file).subscribe({
+        next: (res) => {
+          this.snackBar.open('Document uploaded successfully!', 'Close', { duration: 3000 });
+          this.isUploadingDoc = false;
+          this.loadCaseDetails(this.caseId!); // Refresh to show new doc
+        },
+        error: (err) => {
+          console.error(err);
+          this.snackBar.open('Failed to upload document', 'Close', { duration: 3000 });
+          this.isUploadingDoc = false;
+        }
+      });
+    }
+    // Reset input
+    event.target.value = '';
+  }
 
   ngOnInit(): void {
     // Decode JWT to get user role
@@ -409,6 +435,31 @@ export class CaseDetailsComponent implements OnInit, OnDestroy {
     .catch(err => {
       console.error(err);
       this.snackBar.open('Failed to download report', 'Close', { duration: 3000 });
+    });
+  }
+
+  private dialog = inject(MatDialog);
+
+  openRatingDialog() {
+    const dialogRef = this.dialog.open(RatingDialogComponent, {
+      width: '500px',
+      disableClose: true,
+      data: { caseData: this.caseData }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && this.caseId) {
+        this.caseService.closeCase(this.caseId, result.rating, result.review).subscribe({
+          next: () => {
+            this.snackBar.open('Case marked as completed! Thank you for your feedback.', 'Close', { duration: 5000 });
+            this.caseData.status = 'completed';
+          },
+          error: (err) => {
+            console.error(err);
+            this.snackBar.open('Failed to close case', 'Close', { duration: 3000 });
+          }
+        });
+      }
     });
   }
 }
